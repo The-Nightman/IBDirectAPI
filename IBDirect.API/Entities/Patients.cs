@@ -1,4 +1,4 @@
-namespace IBDirect.API;
+namespace IBDirect.API.Entities;
 
 public class Patients
 {
