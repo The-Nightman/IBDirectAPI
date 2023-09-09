@@ -1,6 +1,7 @@
 using IBDirect.API.Data;
 using IBDirect.API.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IBDirect.API.Controllers;
 
@@ -15,16 +16,16 @@ public class PatientsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Patients>> GetPatients()
+    public async Task<ActionResult<IEnumerable<Patients>>> GetPatients()
     {
-        var patients = _context.Patients.ToList();
+        var patients = await _context.Patients.ToListAsync();
 
         return patients;
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Patients> GetPatient(int id)
+    public async Task<ActionResult<Patients>> GetPatient(int id)
     {
-        return _context.Patients.Find(id);
+        return await _context.Patients.FindAsync(id);
     }
 }
