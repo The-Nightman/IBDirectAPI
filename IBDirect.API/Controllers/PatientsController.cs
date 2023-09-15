@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IBDirect.API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class PatientsController : ControllerBase
+public class PatientsController : BaseApiController
 {
     private readonly DataContext _context;
     public PatientsController(DataContext context)
