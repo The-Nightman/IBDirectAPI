@@ -40,4 +40,29 @@ public class AccountController : BaseApiController
     {
         return await _context.Patients.AnyAsync(x => x.Name == name.ToLower());
     }
+
+    [HttpPost("registerStaff")]
+    public async Task<ActionResult<Staff>> RegisterStaff(RegisterDto registerDto)
+    {
+        if (await StaffExists(registerDto.Name)) return BadRequest("Staff member already exists");
+
+        using var hmac = new HMACSHA512();
+
+        var staff = new Staff
+        {
+            Name = registerDto.Name.ToLower(),
+            PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+            Salt = hmac.Key
+        };
+
+        _context.Staff.Add(staff);
+        await _context.SaveChangesAsync();
+
+        return staff;
+    }
+
+    private async Task<bool> StaffExists(string name)
+    {
+        return await _context.Staff.AnyAsync(x => x.Name == name.ToLower());
+    }
 }
