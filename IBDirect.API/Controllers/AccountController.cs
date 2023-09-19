@@ -67,7 +67,7 @@ public class AccountController : BaseApiController
     }
 
     [HttpPost("loginPatient")]
-    public async Task<ActionResult<Patients>> Login(LoginDto loginDto)
+    public async Task<ActionResult<Patients>> LoginPatient(LoginDto loginDto)
     {
         var patient = await _context.Patients.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
@@ -83,5 +83,24 @@ public class AccountController : BaseApiController
         }
 
         return patient;
+    }
+
+    [HttpPost("loginStaff")]
+    public async Task<ActionResult<Staff>> LoginStaff(LoginDto loginDto)
+    {
+        var staff = await _context.Staff.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
+
+        if (staff == null) return Unauthorized();
+
+        using var hmac = new HMACSHA512(staff.Salt);
+
+        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+
+        foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
+        {
+            if (value != staff.PassHash[i]) return Unauthorized("invalid password");
+        }
+
+        return staff;
     }
 }
