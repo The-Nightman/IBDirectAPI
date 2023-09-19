@@ -65,4 +65,23 @@ public class AccountController : BaseApiController
     {
         return await _context.Staff.AnyAsync(x => x.Name == name.ToLower());
     }
+
+    [HttpPost("loginPatient")]
+    public async Task<ActionResult<Patients>> Login(LoginDto loginDto)
+    {
+        var patient = await _context.Patients.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
+
+        if (patient == null) return Unauthorized();
+
+        using var hmac = new HMACSHA512(patient.Salt);
+
+        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+
+        foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
+        {
+            if (value != patient.PassHash[i]) return Unauthorized("invalid password");
+        }
+
+        return patient;
+    }
 }
