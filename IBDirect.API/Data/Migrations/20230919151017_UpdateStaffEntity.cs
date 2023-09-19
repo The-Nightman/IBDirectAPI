@@ -29,7 +29,7 @@ namespace IBDirect.API.Data.Migrations
             migrationBuilder.AlterColumn<byte[]>(
                 name: "Salt",
                 table: "Staff",
-                type: "bytea",
+                type: "bytea USING \"Salt\"::bytea",
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "text",
