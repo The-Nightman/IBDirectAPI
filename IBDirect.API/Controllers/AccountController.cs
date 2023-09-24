@@ -42,30 +42,38 @@ public class AccountController : BaseApiController
         return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
     }
 
-    // [HttpPost("registerStaff")]
-    // public async Task<ActionResult<Staff>> RegisterStaff(RegisterDto registerDto)
-    // {
-    //     if (await StaffExists(registerDto.Name)) return BadRequest("Staff member already exists");
+    [HttpPost("register/staff")]
+    public async Task<ActionResult<Users>> RegisterStaff(RegisterStaffDto registerDto)
+    {
+        if (await ValidRoleAsync(registerDto.Role)) return BadRequest("Invalid role");
+        if (await StaffExists(registerDto.Name)) return BadRequest("Staff member already exists");
 
-    //     using var hmac = new HMACSHA512();
+        using var hmac = new HMACSHA512();
 
-    //     var staff = new Staff
-    //     {
-    //         Name = registerDto.Name.ToLower(),
-    //         PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-    //         Salt = hmac.Key
-    //     };
+        var staff = new Users
+        {
+            Name = registerDto.Name.ToLower(),
+            PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+            Salt = hmac.Key,
+            Role = registerDto.Role
+        };
 
-    //     _context.Staff.Add(staff);
-    //     await _context.SaveChangesAsync();
+        _context.Users.Add(staff);
+        await _context.SaveChangesAsync();
 
-    //     return staff;
-    // }
+        return staff;
+    }
 
-    // private async Task<bool> StaffExists(string name)
-    // {
-    //     return await _context.Staff.AnyAsync(x => x.Name == name.ToLower());
-    // }
+    private async Task<bool> StaffExists(string name)
+    {
+        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
+    }
+
+    private static Task<bool> ValidRoleAsync(int role)
+    {
+    List<int> validStaffValues = new() { 2, 3, 4 };
+    return Task.FromResult(!validStaffValues.Contains(role));
+    }
 
     // [HttpPost("loginPatient")]
     // public async Task<ActionResult<Patients>> LoginPatient(LoginDto loginDto)
