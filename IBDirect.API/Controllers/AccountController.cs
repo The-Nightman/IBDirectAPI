@@ -16,21 +16,22 @@ public class AccountController : BaseApiController
         _context = context;
     }
 
-    [HttpPost("registerPatient")]
-    public async Task<ActionResult<Patients>> Register(RegisterDto registerDto)
+    [HttpPost("register/patient")]
+    public async Task<ActionResult<Users>> Register(RegisterDto registerDto)
     {
         if (await PatientExists(registerDto.Name)) return BadRequest("Patient already exists");
 
         using var hmac = new HMACSHA512();
 
-        var patient = new Patients
+        var patient = new Users
         {
             Name = registerDto.Name.ToLower(),
             PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-            Salt = hmac.Key
+            Salt = hmac.Key,
+            Role = 1
         };
 
-        _context.Patients.Add(patient);
+        _context.Users.Add(patient);
         await _context.SaveChangesAsync();
 
         return patient;
@@ -38,69 +39,69 @@ public class AccountController : BaseApiController
 
     private async Task<bool> PatientExists(string name)
     {
-        return await _context.Patients.AnyAsync(x => x.Name == name.ToLower());
+        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
     }
 
-    [HttpPost("registerStaff")]
-    public async Task<ActionResult<Staff>> RegisterStaff(RegisterDto registerDto)
-    {
-        if (await StaffExists(registerDto.Name)) return BadRequest("Staff member already exists");
+    // [HttpPost("registerStaff")]
+    // public async Task<ActionResult<Staff>> RegisterStaff(RegisterDto registerDto)
+    // {
+    //     if (await StaffExists(registerDto.Name)) return BadRequest("Staff member already exists");
 
-        using var hmac = new HMACSHA512();
+    //     using var hmac = new HMACSHA512();
 
-        var staff = new Staff
-        {
-            Name = registerDto.Name.ToLower(),
-            PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-            Salt = hmac.Key
-        };
+    //     var staff = new Staff
+    //     {
+    //         Name = registerDto.Name.ToLower(),
+    //         PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+    //         Salt = hmac.Key
+    //     };
 
-        _context.Staff.Add(staff);
-        await _context.SaveChangesAsync();
+    //     _context.Staff.Add(staff);
+    //     await _context.SaveChangesAsync();
 
-        return staff;
-    }
+    //     return staff;
+    // }
 
-    private async Task<bool> StaffExists(string name)
-    {
-        return await _context.Staff.AnyAsync(x => x.Name == name.ToLower());
-    }
+    // private async Task<bool> StaffExists(string name)
+    // {
+    //     return await _context.Staff.AnyAsync(x => x.Name == name.ToLower());
+    // }
 
-    [HttpPost("loginPatient")]
-    public async Task<ActionResult<Patients>> LoginPatient(LoginDto loginDto)
-    {
-        var patient = await _context.Patients.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
+    // [HttpPost("loginPatient")]
+    // public async Task<ActionResult<Patients>> LoginPatient(LoginDto loginDto)
+    // {
+    //     var patient = await _context.Patients.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
-        if (patient == null) return Unauthorized();
+    //     if (patient == null) return Unauthorized();
 
-        using var hmac = new HMACSHA512(patient.Salt);
+    //     using var hmac = new HMACSHA512(patient.Salt);
 
-        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+    //     var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
-        foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
-        {
-            if (value != patient.PassHash[i]) return Unauthorized("invalid password");
-        }
+    //     foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
+    //     {
+    //         if (value != patient.PassHash[i]) return Unauthorized("invalid password");
+    //     }
 
-        return patient;
-    }
+    //     return patient;
+    // }
 
-    [HttpPost("loginStaff")]
-    public async Task<ActionResult<Staff>> LoginStaff(LoginDto loginDto)
-    {
-        var staff = await _context.Staff.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
+    // [HttpPost("loginStaff")]
+    // public async Task<ActionResult<Staff>> LoginStaff(LoginDto loginDto)
+    // {
+    //     var staff = await _context.Staff.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
-        if (staff == null) return Unauthorized();
+    //     if (staff == null) return Unauthorized();
 
-        using var hmac = new HMACSHA512(staff.Salt);
+    //     using var hmac = new HMACSHA512(staff.Salt);
 
-        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+    //     var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
-        foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
-        {
-            if (value != staff.PassHash[i]) return Unauthorized("invalid password");
-        }
+    //     foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
+    //     {
+    //         if (value != staff.PassHash[i]) return Unauthorized("invalid password");
+    //     }
 
-        return staff;
-    }
+    //     return staff;
+    // }
 }
