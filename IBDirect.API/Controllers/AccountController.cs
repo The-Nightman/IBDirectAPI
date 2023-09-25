@@ -37,11 +37,6 @@ public class AccountController : BaseApiController
         return patient;
     }
 
-    private async Task<bool> PatientExists(string name)
-    {
-        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
-    }
-
     [HttpPost("register/staff")]
     public async Task<ActionResult<Users>> RegisterStaff(RegisterStaffDto registerDto)
     {
@@ -62,17 +57,6 @@ public class AccountController : BaseApiController
         await _context.SaveChangesAsync();
 
         return staff;
-    }
-
-    private async Task<bool> StaffExists(string name)
-    {
-        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
-    }
-
-    private static Task<bool> ValidRoleAsync(int role)
-    {
-    List<int> validStaffValues = new() { 2, 3, 4 };
-    return Task.FromResult(!validStaffValues.Contains(role));
     }
 
     [HttpPost("login/patient")]
@@ -112,5 +96,21 @@ public class AccountController : BaseApiController
         }
 
         return staff;
+    }
+
+    private async Task<bool> PatientExists(string name)
+    {
+        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
+    }
+
+    private async Task<bool> StaffExists(string name)
+    {
+        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
+    }
+
+    private static Task<bool> ValidRoleAsync(int role)
+    {
+    List<int> validStaffValues = new() { 2, 3, 4 };
+    return Task.FromResult(!validStaffValues.Contains(role));
     }
 }
