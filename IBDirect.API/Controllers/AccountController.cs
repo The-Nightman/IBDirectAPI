@@ -75,24 +75,24 @@ public class AccountController : BaseApiController
     return Task.FromResult(!validStaffValues.Contains(role));
     }
 
-    // [HttpPost("loginPatient")]
-    // public async Task<ActionResult<Patients>> LoginPatient(LoginDto loginDto)
-    // {
-    //     var patient = await _context.Patients.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
+    [HttpPost("login/patient")]
+    public async Task<ActionResult<Users>> LoginPatient(LoginDto loginDto)
+    {
+        var patient = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
-    //     if (patient == null) return Unauthorized();
+        if (patient == null || patient.Role != 1) return Unauthorized();
 
-    //     using var hmac = new HMACSHA512(patient.Salt);
+        using var hmac = new HMACSHA512(patient.Salt);
 
-    //     var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
-    //     foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
-    //     {
-    //         if (value != patient.PassHash[i]) return Unauthorized("invalid password");
-    //     }
+        foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
+        {
+            if (value != patient.PassHash[i]) return Unauthorized("invalid password");
+        }
 
-    //     return patient;
-    // }
+        return patient;
+    }
 
     // [HttpPost("loginStaff")]
     // public async Task<ActionResult<Staff>> LoginStaff(LoginDto loginDto)
