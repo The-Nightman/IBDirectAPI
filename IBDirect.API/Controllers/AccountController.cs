@@ -16,62 +16,55 @@ public class AccountController : BaseApiController
         _context = context;
     }
 
-    [HttpPost("registerPatient")]
-    public async Task<ActionResult<Patients>> Register(RegisterDto registerDto)
+    [HttpPost("register/patient")]
+    public async Task<ActionResult<Users>> Register(RegisterDto registerDto)
     {
         if (await PatientExists(registerDto.Name)) return BadRequest("Patient already exists");
 
         using var hmac = new HMACSHA512();
 
-        var patient = new Patients
+        var patient = new Users
         {
             Name = registerDto.Name.ToLower(),
             PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-            Salt = hmac.Key
+            Salt = hmac.Key,
+            Role = 1
         };
 
-        _context.Patients.Add(patient);
+        _context.Users.Add(patient);
         await _context.SaveChangesAsync();
 
         return patient;
     }
 
-    private async Task<bool> PatientExists(string name)
+    [HttpPost("register/staff")]
+    public async Task<ActionResult<Users>> RegisterStaff(RegisterStaffDto registerDto)
     {
-        return await _context.Patients.AnyAsync(x => x.Name == name.ToLower());
-    }
-
-    [HttpPost("registerStaff")]
-    public async Task<ActionResult<Staff>> RegisterStaff(RegisterDto registerDto)
-    {
+        if (await ValidRoleAsync(registerDto.Role)) return BadRequest("Invalid role");
         if (await StaffExists(registerDto.Name)) return BadRequest("Staff member already exists");
 
         using var hmac = new HMACSHA512();
 
-        var staff = new Staff
+        var staff = new Users
         {
             Name = registerDto.Name.ToLower(),
             PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-            Salt = hmac.Key
+            Salt = hmac.Key,
+            Role = registerDto.Role
         };
 
-        _context.Staff.Add(staff);
+        _context.Users.Add(staff);
         await _context.SaveChangesAsync();
 
         return staff;
     }
 
-    private async Task<bool> StaffExists(string name)
+    [HttpPost("login/patient")]
+    public async Task<ActionResult<Users>> LoginPatient(LoginDto loginDto)
     {
-        return await _context.Staff.AnyAsync(x => x.Name == name.ToLower());
-    }
+        var patient = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
-    [HttpPost("loginPatient")]
-    public async Task<ActionResult<Patients>> LoginPatient(LoginDto loginDto)
-    {
-        var patient = await _context.Patients.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
-
-        if (patient == null) return Unauthorized();
+        if (patient == null || patient.Role != 1) return Unauthorized();
 
         using var hmac = new HMACSHA512(patient.Salt);
 
@@ -85,12 +78,13 @@ public class AccountController : BaseApiController
         return patient;
     }
 
-    [HttpPost("loginStaff")]
-    public async Task<ActionResult<Staff>> LoginStaff(LoginDto loginDto)
+    [HttpPost("login/staff")]
+    public async Task<ActionResult<Users>> LoginStaff(LoginDto loginDto)
     {
-        var staff = await _context.Staff.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
-        if (staff == null) return Unauthorized();
+        var staff = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
+
+        if (staff == null || await ValidRoleAsync(staff.Role)) return Unauthorized();
 
         using var hmac = new HMACSHA512(staff.Salt);
 
@@ -102,5 +96,21 @@ public class AccountController : BaseApiController
         }
 
         return staff;
+    }
+
+    private async Task<bool> PatientExists(string name)
+    {
+        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
+    }
+
+    private async Task<bool> StaffExists(string name)
+    {
+        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
+    }
+
+    private static Task<bool> ValidRoleAsync(int role)
+    {
+    List<int> validStaffValues = new() { 2, 3, 4 };
+    return Task.FromResult(!validStaffValues.Contains(role));
     }
 }

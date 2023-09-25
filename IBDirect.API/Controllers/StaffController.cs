@@ -14,16 +14,16 @@ public class StaffController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Staff>>> GetStaff()
+    public async Task<ActionResult<IEnumerable<Users>>> GetStaff()
     {
-        var staff = await _context.Staff.ToListAsync();
+        var staff = await _context.Users.Where(u => u.Role == 2 || u.Role == 3 || u.Role == 4).ToListAsync();
 
         return staff;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Staff>> GetStaff(int id)
+    public async Task<ActionResult<Users>> GetStaff(int id)
     {
-        return await _context.Staff.FindAsync(id);
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id && (u.Role == 2 || u.Role == 3 || u.Role == 4));
     }
 }

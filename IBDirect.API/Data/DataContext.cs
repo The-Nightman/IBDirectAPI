@@ -9,7 +9,6 @@ public class DataContext : DbContext
     {
     }
 
-    public DbSet<Patients> Patients { get; set; }
-    public DbSet<Staff> Staff { get; set; }
+    public DbSet<Users> Users { get; set; }
 
 }

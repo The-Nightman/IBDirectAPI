@@ -6,27 +6,25 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IBDirect.API.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddStaffTable : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Staff",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
-                    Pass = table.Column<string>(type: "text", nullable: true),
-                    Role = table.Column<string>(type: "text", nullable: true),
-                    Hospital = table.Column<string>(type: "text", nullable: true),
-                    Speciality = table.Column<string>(type: "text", nullable: true),
-                    Salt = table.Column<string>(type: "text", nullable: true)
+                    PassHash = table.Column<byte[]>(type: "bytea", nullable: true),
+                    Salt = table.Column<byte[]>(type: "bytea", nullable: true),
+                    Role = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Staff", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
         }
 
@@ -34,7 +32,7 @@ namespace IBDirect.API.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Staff");
+                name: "Users");
         }
     }
 }

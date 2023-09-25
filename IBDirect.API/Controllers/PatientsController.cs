@@ -14,16 +14,16 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Patients>>> GetPatients()
+    public async Task<ActionResult<IEnumerable<Users>>> GetPatients()
     {
-        var patients = await _context.Patients.ToListAsync();
+        var patients = await _context.Users.Where(user => user.Role == 1).ToListAsync();
 
         return patients;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Patients>> GetPatient(int id)
+    public async Task<ActionResult<Users>> GetPatient(int id)
     {
-        return await _context.Patients.FindAsync(id);
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.Role == 1);
     }
 }

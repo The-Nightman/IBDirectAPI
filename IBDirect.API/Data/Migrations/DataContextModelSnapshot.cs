@@ -21,7 +21,7 @@ namespace IBDirect.API.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("IBDirect.API.Entities.Patients", b =>
+            modelBuilder.Entity("IBDirect.API.Entities.Users", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,34 +35,15 @@ namespace IBDirect.API.Data.Migrations
                     b.Property<byte[]>("PassHash")
                         .HasColumnType("bytea");
 
-                    b.Property<byte[]>("Salt")
-                        .HasColumnType("bytea");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Patients");
-                });
-
-            modelBuilder.Entity("IBDirect.API.Entities.Staff", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Role")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<byte[]>("PassHash")
-                        .HasColumnType("bytea");
-
                     b.Property<byte[]>("Salt")
                         .HasColumnType("bytea");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Staff");
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }
