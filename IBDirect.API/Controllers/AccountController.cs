@@ -94,22 +94,23 @@ public class AccountController : BaseApiController
         return patient;
     }
 
-    // [HttpPost("loginStaff")]
-    // public async Task<ActionResult<Staff>> LoginStaff(LoginDto loginDto)
-    // {
-    //     var staff = await _context.Staff.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
+    [HttpPost("login/staff")]
+    public async Task<ActionResult<Users>> LoginStaff(LoginDto loginDto)
+    {
 
-    //     if (staff == null) return Unauthorized();
+        var staff = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
-    //     using var hmac = new HMACSHA512(staff.Salt);
+        if (staff == null || await ValidRoleAsync(staff.Role)) return Unauthorized();
 
-    //     var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+        using var hmac = new HMACSHA512(staff.Salt);
 
-    //     foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
-    //     {
-    //         if (value != staff.PassHash[i]) return Unauthorized("invalid password");
-    //     }
+        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
-    //     return staff;
-    // }
+        foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
+        {
+            if (value != staff.PassHash[i]) return Unauthorized("invalid password");
+        }
+
+        return staff;
+    }
 }
