@@ -40,7 +40,7 @@ public class AccountController : BaseApiController
     [HttpPost("register/staff")]
     public async Task<ActionResult<Users>> RegisterStaff(RegisterStaffDto registerDto)
     {
-        if (await ValidRoleAsync(registerDto.Role)) return BadRequest("Invalid role");
+        if (!await ValidRoleAsync(registerDto.Role)) return BadRequest("Invalid role");
         if (await StaffExists(registerDto.Name)) return BadRequest("Staff member already exists");
 
         using var hmac = new HMACSHA512();
@@ -84,7 +84,7 @@ public class AccountController : BaseApiController
 
         var staff = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
-        if (staff == null || await ValidRoleAsync(staff.Role)) return Unauthorized();
+        if (staff == null || !await ValidRoleAsync(staff.Role)) return Unauthorized();
 
         using var hmac = new HMACSHA512(staff.Salt);
 
@@ -110,7 +110,7 @@ public class AccountController : BaseApiController
 
     private static Task<bool> ValidRoleAsync(int role)
     {
-    List<int> validStaffValues = new() { 2, 3, 4 };
-    return Task.FromResult(!validStaffValues.Contains(role));
+    List<int> validStaffValues = new() { 2, 3, 4, 5 };
+    return Task.FromResult(validStaffValues.Contains(role));
     }
 }
