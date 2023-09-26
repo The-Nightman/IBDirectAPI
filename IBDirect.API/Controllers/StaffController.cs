@@ -1,10 +1,12 @@
 using IBDirect.API.Data;
 using IBDirect.API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace IBDirect.API.Controllers;
 
+[Authorize]
 public class StaffController : BaseApiController
 {
     private readonly DataContext _context;
