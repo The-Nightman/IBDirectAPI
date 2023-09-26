@@ -3,6 +3,7 @@ using System.Text;
 using IBDirect.API.Data;
 using IBDirect.API.DTOs;
 using IBDirect.API.Entities;
+using IBDirect.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,13 +12,15 @@ namespace IBDirect.API.Controllers;
 public class AccountController : BaseApiController
 {
     private readonly DataContext _context;
-    public AccountController(DataContext context)
+    private readonly ITokenService _tokenService;
+    public AccountController(DataContext context, ITokenService tokenService)
     {
         _context = context;
+        _tokenService = tokenService;
     }
 
     [HttpPost("register/patient")]
-    public async Task<ActionResult<Users>> Register(RegisterDto registerDto)
+    public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
         if (await PatientExists(registerDto.Name)) return BadRequest("Patient already exists");
 
@@ -34,11 +37,15 @@ public class AccountController : BaseApiController
         _context.Users.Add(patient);
         await _context.SaveChangesAsync();
 
-        return patient;
+        return new UserDto
+        {
+            Name = patient.Name,
+            Token = _tokenService.CreateToken(patient)
+        };
     }
 
     [HttpPost("register/staff")]
-    public async Task<ActionResult<Users>> RegisterStaff(RegisterStaffDto registerDto)
+    public async Task<ActionResult<UserDto>> RegisterStaff(RegisterStaffDto registerDto)
     {
         if (!await ValidRoleAsync(registerDto.Role)) return BadRequest("Invalid role");
         if (await StaffExists(registerDto.Name)) return BadRequest("Staff member already exists");
@@ -56,11 +63,15 @@ public class AccountController : BaseApiController
         _context.Users.Add(staff);
         await _context.SaveChangesAsync();
 
-        return staff;
+        return new UserDto
+        {
+            Name = staff.Name,
+            Token = _tokenService.CreateToken(staff)
+        };
     }
 
     [HttpPost("login/patient")]
-    public async Task<ActionResult<Users>> LoginPatient(LoginDto loginDto)
+    public async Task<ActionResult<UserDto>> LoginPatient(LoginDto loginDto)
     {
         var patient = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
@@ -75,11 +86,15 @@ public class AccountController : BaseApiController
             if (value != patient.PassHash[i]) return Unauthorized("invalid password");
         }
 
-        return patient;
+        return new UserDto
+        {
+            Name = patient.Name,
+            Token = _tokenService.CreateToken(patient)
+        };
     }
 
     [HttpPost("login/staff")]
-    public async Task<ActionResult<Users>> LoginStaff(LoginDto loginDto)
+    public async Task<ActionResult<UserDto>> LoginStaff(LoginDto loginDto)
     {
 
         var staff = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
@@ -95,7 +110,11 @@ public class AccountController : BaseApiController
             if (value != staff.PassHash[i]) return Unauthorized("invalid password");
         }
 
-        return staff;
+        return new UserDto
+        {
+            Name = staff.Name,
+            Token = _tokenService.CreateToken(staff)
+        };
     }
 
     private async Task<bool> PatientExists(string name)
