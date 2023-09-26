@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace IBDirect.API.DTOs
 {
     public class LoginDto
