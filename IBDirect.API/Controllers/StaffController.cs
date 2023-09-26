@@ -16,7 +16,8 @@ public class StaffController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Users>>> GetStaff()
     {
-        var staff = await _context.Users.Where(u => u.Role == 2 || u.Role == 3 || u.Role == 4).ToListAsync();
+        List<int> validStaffValues = new() { 2, 3, 4, 5 };
+        var staff = await _context.Users.Where(u => validStaffValues.Contains(u.Role)).ToListAsync();
 
         return staff;
     }
@@ -24,6 +25,7 @@ public class StaffController : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<Users>> GetStaff(int id)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id && (u.Role == 2 || u.Role == 3 || u.Role == 4));
+        List<int> validStaffValues = new() { 2, 3, 4, 5 };
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id && validStaffValues.Contains(u.Role));
     }
 }
