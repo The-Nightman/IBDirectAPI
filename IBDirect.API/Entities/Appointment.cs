@@ -11,4 +11,7 @@ public class Appointment
     public string Location { get; set; }
     public string AppType { get; set; }
     public string Notes { get; set; }
+
+    public int PatientDetailsId { get; set; }
+    public PatientDetails PatientDetails { get; set; }
 }

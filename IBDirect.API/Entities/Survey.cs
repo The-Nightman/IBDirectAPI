@@ -29,4 +29,7 @@ public class Survey
     public int Q17 { get; set; }
     public int Q18 { get; set; }
     public int Q19 { get; set; }
+
+    public int PatientDetailsId { get; set; }
+    public PatientDetails PatientDetails { get; set; }
 }
