@@ -35,6 +35,9 @@ public class AccountController : BaseApiController
             if (await PatientExists(generatedName))
                 return BadRequest("Patient already exists");
 
+            if (regPatientDto.Stoma == true && regPatientDto.StomaNurseId == null)
+                return BadRequest("Stoma Patient requires a Stoma Nurse");
+
             using var hmac = new HMACSHA512();
 
             var patient = new Users
