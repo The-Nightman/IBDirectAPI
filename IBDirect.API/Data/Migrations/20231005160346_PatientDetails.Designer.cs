@@ -3,6 +3,7 @@ using System;
 using IBDirect.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IBDirect.API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231005160346_PatientDetails")]
+    partial class PatientDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,7 +100,7 @@ namespace IBDirect.API.Data.Migrations
                     b.Property<bool>("Stoma")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("StomaNurseId")
+                    b.Property<int>("StomaNurseId")
                         .HasColumnType("integer");
 
                     b.HasKey("PatientId");
@@ -146,7 +149,7 @@ namespace IBDirect.API.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ContScore")
+                    b.Property<int>("ContScore")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("DateTime")
@@ -155,67 +158,67 @@ namespace IBDirect.API.Data.Migrations
                     b.Property<int>("PatientDetailsId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q1")
+                    b.Property<int>("Q1")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q10")
+                    b.Property<int>("Q10")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q11")
+                    b.Property<int>("Q11")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q12")
+                    b.Property<int>("Q12")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q13")
+                    b.Property<int>("Q13")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q14")
+                    b.Property<int>("Q14")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q15")
+                    b.Property<int>("Q15")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q16")
+                    b.Property<int>("Q16")
                         .HasColumnType("integer");
 
                     b.Property<string>("Q16a")
                         .HasColumnType("text");
 
-                    b.Property<int?>("Q17")
+                    b.Property<int>("Q17")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q18")
+                    b.Property<int>("Q18")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q19")
+                    b.Property<int>("Q19")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q2")
+                    b.Property<int>("Q2")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q3")
+                    b.Property<int>("Q3")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q4")
+                    b.Property<int>("Q4")
                         .HasColumnType("integer");
 
-                    b.Property<bool?>("Q4a")
+                    b.Property<bool>("Q4a")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("Q5")
+                    b.Property<int>("Q5")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q6")
+                    b.Property<int>("Q6")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q7")
+                    b.Property<int>("Q7")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q8")
+                    b.Property<int>("Q8")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Q9")
+                    b.Property<int>("Q9")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
