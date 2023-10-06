@@ -1,6 +1,6 @@
 namespace IBDirect.API.DTOs
 {
-    public class PatientDetails
+    public class PatientDetailsStaffVDto
     {
         public int PatientId { get; set; }
         public string Name { get; set; }
