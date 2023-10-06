@@ -19,7 +19,7 @@ public class PatientDetails
     public string Notes { get; set; }
     public int ConsultantId { get; set; }
     public int NurseId { get; set; }
-    public int StomaNurseId { get; set; }
+    public int? StomaNurseId { get; set; }
     public int GenpractId { get; set; }
     public DateOnly DateOfBirth { get; set; }
     public string Address { get; set; }
