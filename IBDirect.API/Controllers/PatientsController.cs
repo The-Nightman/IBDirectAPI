@@ -28,4 +28,10 @@ public class PatientsController : BaseApiController
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.Role == 1);
     }
+
+    [HttpGet("{id}/details")]
+    public async Task<ActionResult<PatientDetails>> GetPatientDetails(int id)
+    {
+        return await _context.PatientDetails.FirstOrDefaultAsync(u => u.PatientId == id);
+    }
 }
