@@ -85,25 +85,51 @@ public class AccountController : BaseApiController
     [HttpPost("register/staff")]
     public async Task<ActionResult<UserDto>> RegisterStaff(RegisterStaffDto registerDto)
     {
-        if (!await ValidRoleAsync(registerDto.Role))
-            return BadRequest("Invalid role");
-        if (await StaffExists(registerDto.Name))
-            return BadRequest("Staff member already exists");
+        using var transaction = await _context.Database.BeginTransactionAsync();
 
-        using var hmac = new HMACSHA512();
-
-        var staff = new Users
+        try
         {
-            Name = registerDto.Name.ToLower(),
-            PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-            Salt = hmac.Key,
-            Role = registerDto.Role
-        };
+            if (!await ValidRoleAsync(registerDto.Role))
+                return BadRequest("Invalid role");
+            if (await StaffExists(registerDto.Username))
+                return BadRequest("Staff member already exists");
 
-        _context.Users.Add(staff);
-        await _context.SaveChangesAsync();
+            using var hmac = new HMACSHA512();
 
-        return new UserDto { Name = staff.Name, Token = _tokenService.CreateToken(staff) };
+            var staff = new Users
+            {
+                Name = registerDto.Username,
+                PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+                Salt = hmac.Key,
+                Role = registerDto.Role
+            };
+
+            _context.Users.Add(staff);
+            await _context.SaveChangesAsync();
+
+            string roleName = await StaffRoleIdToString(registerDto.Role);
+
+            var staffDetails = new StaffDetails
+            {
+                StaffId = staff.Id,
+                Name = registerDto.Name,
+                Role = roleName,
+                Speciality = registerDto.Specialty,
+                Practice = registerDto.Practice
+            };
+
+            _context.StaffDetails.Add(staffDetails);
+            await _context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return new UserDto { Name = staff.Name, Token = _tokenService.CreateToken(staff) };
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost("login/patient")]
@@ -165,12 +191,33 @@ public class AccountController : BaseApiController
 
     private async Task<bool> StaffExists(string name)
     {
-        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
+        return await _context.Users.AnyAsync(x => x.Name == name);
     }
 
     private static Task<bool> ValidRoleAsync(int role)
     {
         List<int> validStaffValues = new() { 2, 3, 4, 5 };
         return Task.FromResult(validStaffValues.Contains(role));
+    }
+
+    private static Task<string> StaffRoleIdToString(int roleId)
+    {
+        string roleName = null;
+        switch (roleId)
+        {
+            case 2:
+                roleName = "Nurse";
+                break;
+            case 3:
+                roleName = "Stoma Nurse";
+                break;
+            case 4:
+                roleName = "Consultant";
+                break;
+            case 5:
+                roleName = "General Practitioner";
+                break;
+        }
+        return Task.FromResult(roleName);
     }
 }
