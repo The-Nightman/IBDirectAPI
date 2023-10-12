@@ -94,7 +94,7 @@ public class AccountController : BaseApiController
 
         var staff = new Users
         {
-            Name = registerDto.Name.ToLower(),
+            Name = registerDto.Name,
             PassHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
             Salt = hmac.Key,
             Role = registerDto.Role
@@ -165,7 +165,7 @@ public class AccountController : BaseApiController
 
     private async Task<bool> StaffExists(string name)
     {
-        return await _context.Users.AnyAsync(x => x.Name == name.ToLower());
+        return await _context.Users.AnyAsync(x => x.Name == name);
     }
 
     private static Task<bool> ValidRoleAsync(int role)
