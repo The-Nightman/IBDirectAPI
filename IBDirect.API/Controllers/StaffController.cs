@@ -30,4 +30,10 @@ public class StaffController : BaseApiController
         List<int> validStaffValues = new() { 2, 3, 4, 5 };
         return await _context.Users.FirstOrDefaultAsync(u => u.Id == id && validStaffValues.Contains(u.Role));
     }
+
+    [HttpGet("{id}/details")]
+    public async Task<ActionResult<StaffDetails>> GetStaffDetails(int id)
+    {
+        return await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
+    }
 }
