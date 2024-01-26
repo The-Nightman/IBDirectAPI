@@ -179,4 +179,47 @@ public class PatientsController : BaseApiController
 
         return Ok(patients);
     }
+
+    [HttpPut("{id}/updateNotes")]
+    public async Task<ActionResult> UpdatePatientNotes(
+        int id,
+        UpdatePatientNotesDto updatePatientNotesDto
+    )
+    {
+        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
+            p => p.PatientId == id
+        );
+
+        if (patientDetails == null)
+        {
+            return NotFound("Patient not found");
+        }
+
+        patientDetails.Notes = updatePatientNotesDto.Notes;
+
+        _context.Entry(patientDetails).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound("Patient details no longer exists");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return NoContent();
+    }
+
+    private async Task<bool> PatientDetailsExists(int id)
+    {
+        return await _context.PatientDetails.AnyAsync(u => u.PatientId == id);
+    }
 }
