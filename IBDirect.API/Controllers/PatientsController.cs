@@ -34,7 +34,96 @@ public class PatientsController : BaseApiController
     [HttpGet("{id}/details")]
     public async Task<ActionResult<PatientDetails>> GetPatientDetails(int id)
     {
-        return await _context.PatientDetails.FirstOrDefaultAsync(u => u.PatientId == id);
+        var patient = await _context.Users.FindAsync(id);
+
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        var patientDetails = await (
+            from p in _context.PatientDetails
+            join c in _context.StaffDetails on p.ConsultantId equals c.StaffId
+            join n in _context.StaffDetails on p.NurseId equals n.StaffId
+            from s in _context.StaffDetails.Where(s => p.StomaNurseId == s.StaffId).DefaultIfEmpty()
+            join g in _context.StaffDetails on p.GenpractId equals g.StaffId
+            where p.PatientId == id
+            select new PatientDetailsStaffVDto
+            {
+                PatientId = p.PatientId,
+                Name = p.Name,
+                Sex = p.Sex,
+                Hospital = p.Hospital,
+                Diagnosis = p.Diagnosis,
+                DiagnosisDate = p.DiagnosisDate,
+                Stoma = p.Stoma,
+                Notes = p.Notes,
+                ConsultantName = c.Name,
+                NurseName = n.Name,
+                StomaNurseName = s != null ? s.Name : null,
+                GenpractName = g.Name,
+                DateOfBirth = p.DateOfBirth,
+                Address = p.Address,
+                Appointments = p.Appointments
+                    .Select(
+                        a =>
+                            new AppointmentDto
+                            {
+                                StaffId = a.StaffId,
+                                DateTime = a.DateTime,
+                                Location = a.Location,
+                                AppType = a.AppType,
+                                Notes = a.Notes
+                            }
+                    )
+                    .ToList(),
+                Surveys = p.Surveys
+                    .Select(
+                        s =>
+                            new SurveyDto
+                            {
+                                DateTime = s.DateTime,
+                                Q1 = s.Q1,
+                                Q2 = s.Q2,
+                                Q3 = s.Q3,
+                                Q4 = s.Q4,
+                                Q5 = s.Q5,
+                                Q6 = s.Q6,
+                                Q7 = s.Q7,
+                                Q8 = s.Q8,
+                                Q9 = s.Q9,
+                                Q10 = s.Q10,
+                                Q11 = s.Q11,
+                                Q12 = s.Q12,
+                                ContScore = s.ContScore,
+                                Q13 = s.Q13,
+                                Q14 = s.Q14,
+                                Q15 = s.Q15,
+                                Q16 = s.Q16,
+                                Q16a = s.Q16a,
+                                Q17 = s.Q17,
+                                Q18 = s.Q18,
+                                Q19 = s.Q19
+                            }
+                    )
+                    .ToList(),
+                Prescriptions = p.Prescriptions
+                    .Select(
+                        p =>
+                            new PrescriptionDto
+                            {
+                                ScriptName = p.ScriptName,
+                                ScriptStartDate = p.ScriptStartDate,
+                                ScriptDose = p.ScriptDose,
+                                ScriptInterval = p.ScriptInterval,
+                                ScriptNotes = p.ScriptNotes
+                            }
+                    )
+                    .ToList()
+            }
+        ).FirstOrDefaultAsync();
+
+        return Ok(patientDetails);
     }
 
     [HttpGet("mypatients/{staffRole}/{staffId}")]
