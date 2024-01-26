@@ -2,10 +2,10 @@ namespace IBDirect.API.DTOs
 {
     public class PrescriptionDto
     {
-        public int StaffId { get; set; }
-        public DateTime DateTime { get; set; }
-        public string Location { get; set; }
-        public string AppType { get; set; }
-        public string Notes { get; set; }
+        public string ScriptName { get; set; }
+        public DateOnly ScriptStartDate { get; set; }
+        public string ScriptDose { get; set; }
+        public string ScriptInterval { get; set; }
+        public string ScriptNotes { get; set; }
     }
 }
