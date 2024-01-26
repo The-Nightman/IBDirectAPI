@@ -38,7 +38,7 @@ public class PatientsController : BaseApiController
 
         if (patient == null)
         {
-            return NotFound();
+            return NotFound("Patient not found");
         }
 
         var patientDetails = await (
@@ -122,6 +122,11 @@ public class PatientsController : BaseApiController
                     .ToList()
             }
         ).FirstOrDefaultAsync();
+
+        if (patientDetails == null)
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
 
         return Ok(patientDetails);
     }
