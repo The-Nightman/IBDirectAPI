@@ -33,7 +33,7 @@ public class StaffController : BaseApiController
             return NotFound("Staff member not found");
         }
 
-        return staff;
+        return Ok(staff);
     }
 
     [HttpGet("{id}/details")]
@@ -46,6 +46,6 @@ public class StaffController : BaseApiController
             return NotFound("Staff member details not found, please contact an administrator");
         }
 
-        return staffDetails;
+        return Ok(staffDetails);
     }
 }
