@@ -73,11 +73,11 @@ public class AccountController : BaseApiController
 
             await transaction.CommitAsync();
 
-            return new UserDto { Name = patient.Name, Token = _tokenService.CreateToken(patient) };
+            return StatusCode(201, "New Patient created");
         }
         catch (Exception)
         {
-            //setup logging to console so errors can be debugged when dockerized ex.Message
+            // TODO: setup logging to console so errors can be debugged when dockerized ex.Message
             await transaction.RollbackAsync();
             return StatusCode(500, "A Transaction error has occurred, contact an administrator");
         }
@@ -124,11 +124,11 @@ public class AccountController : BaseApiController
 
             await transaction.CommitAsync();
 
-            return new UserDto { Name = staff.Name, Token = _tokenService.CreateToken(staff) };
+            return StatusCode(201, "New Staff member created");
         }
         catch (Exception)
         {
-            //setup logging to console so errors can be debugged when dockerized ex.Message
+            // TODO: setup logging to console so errors can be debugged when dockerized ex.Message
             await transaction.RollbackAsync();
             return StatusCode(500, "A Transaction error has occurred, contact an administrator");
         }
