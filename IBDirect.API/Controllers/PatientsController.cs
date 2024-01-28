@@ -20,15 +20,20 @@ public class PatientsController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Users>>> GetPatients()
     {
-        var patients = await _context.Users.Where(user => user.Role == 1).ToListAsync();
-
-        return patients;
+        return await _context.Users.Where(user => user.Role == 1).ToListAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Users>> GetPatient(int id)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.Role == 1);
+        var patient = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.Role == 1);
+
+        if (patient == null)
+        {
+            return NotFound("Patient not found");
+        }
+
+        return Ok(patient);
     }
 
     [HttpGet("{id}/details")]
@@ -211,7 +216,11 @@ public class PatientsController : BaseApiController
             }
             else
             {
-                throw;
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the patient details, please try again later or contact an administrator"
+                );
             }
         }
 

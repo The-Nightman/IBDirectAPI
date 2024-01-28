@@ -73,12 +73,13 @@ public class AccountController : BaseApiController
 
             await transaction.CommitAsync();
 
-            return new UserDto { Name = patient.Name, Token = _tokenService.CreateToken(patient) };
+            return StatusCode(201, "New Patient created");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
+            // TODO: setup logging to console so errors can be debugged when dockerized ex.Message
             await transaction.RollbackAsync();
-            return BadRequest(ex.Message);
+            return StatusCode(500, "A Transaction error has occurred, contact an administrator");
         }
     }
 
@@ -123,12 +124,13 @@ public class AccountController : BaseApiController
 
             await transaction.CommitAsync();
 
-            return new UserDto { Name = staff.Name, Token = _tokenService.CreateToken(staff) };
+            return StatusCode(201, "New Staff member created");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
+            // TODO: setup logging to console so errors can be debugged when dockerized ex.Message
             await transaction.RollbackAsync();
-            return BadRequest(ex.Message);
+            return StatusCode(500, "A Transaction error has occurred, contact an administrator");
         }
     }
 
@@ -138,7 +140,7 @@ public class AccountController : BaseApiController
         var patient = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
         if (patient == null || patient.Role != 1)
-            return Unauthorized();
+            return Unauthorized("Invalid details or password");
 
         using var hmac = new HMACSHA512(patient.Salt);
 
@@ -147,10 +149,10 @@ public class AccountController : BaseApiController
         foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
         {
             if (value != patient.PassHash[i])
-                return Unauthorized("invalid password");
+                return Unauthorized("Invalid details or password");
         }
 
-        return new UserDto { Name = patient.Name, Token = _tokenService.CreateToken(patient) };
+        return Ok(new UserDto { Name = patient.Name, Token = _tokenService.CreateToken(patient) });
     }
 
     [HttpPost("login/staff")]
@@ -159,7 +161,7 @@ public class AccountController : BaseApiController
         var staff = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.Name);
 
         if (staff == null || !await ValidRoleAsync(staff.Role))
-            return Unauthorized();
+            return Unauthorized("Invalid username or password");
 
         using var hmac = new HMACSHA512(staff.Salt);
 
@@ -168,10 +170,10 @@ public class AccountController : BaseApiController
         foreach (var (value, i) in computedHash.Select((value, i) => (value, i)))
         {
             if (value != staff.PassHash[i])
-                return Unauthorized("invalid password");
+                return Unauthorized("Invalid username or password");
         }
 
-        return new UserDto { Name = staff.Name, Token = _tokenService.CreateToken(staff) };
+        return Ok(new UserDto { Name = staff.Name, Token = _tokenService.CreateToken(staff) });
     }
 
     private static Task<string> GeneratePatientUsername(

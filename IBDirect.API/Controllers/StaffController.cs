@@ -19,21 +19,33 @@ public class StaffController : BaseApiController
     public async Task<ActionResult<IEnumerable<Users>>> GetStaff()
     {
         List<int> validStaffValues = new() { 2, 3, 4, 5 };
-        var staff = await _context.Users.Where(u => validStaffValues.Contains(u.Role)).ToListAsync();
-
-        return staff;
+        return await _context.Users.Where(u => validStaffValues.Contains(u.Role)).ToListAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Users>> GetStaff(int id)
     {
         List<int> validStaffValues = new() { 2, 3, 4, 5 };
-        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id && validStaffValues.Contains(u.Role));
+        var staff = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && validStaffValues.Contains(u.Role));
+
+        if (staff == null)
+        {
+            return NotFound("Staff member not found");
+        }
+
+        return Ok(staff);
     }
 
     [HttpGet("{id}/details")]
     public async Task<ActionResult<StaffDetails>> GetStaffDetails(int id)
     {
-        return await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
+        var staffDetails = await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
+
+        if (staffDetails == null)
+        {
+            return NotFound("Staff member details not found, please contact an administrator");
+        }
+
+        return Ok(staffDetails);
     }
 }
