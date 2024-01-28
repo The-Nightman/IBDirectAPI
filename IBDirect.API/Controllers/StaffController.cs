@@ -19,9 +19,7 @@ public class StaffController : BaseApiController
     public async Task<ActionResult<IEnumerable<Users>>> GetStaff()
     {
         List<int> validStaffValues = new() { 2, 3, 4, 5 };
-        var staff = await _context.Users.Where(u => validStaffValues.Contains(u.Role)).ToListAsync();
-
-        return staff;
+        return await _context.Users.Where(u => validStaffValues.Contains(u.Role)).ToListAsync();
     }
 
     [HttpGet("{id}")]
