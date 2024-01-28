@@ -152,7 +152,7 @@ public class AccountController : BaseApiController
                 return Unauthorized("Invalid details or password");
         }
 
-        return new UserDto { Name = patient.Name, Token = _tokenService.CreateToken(patient) };
+        return Ok(new UserDto { Name = patient.Name, Token = _tokenService.CreateToken(patient) });
     }
 
     [HttpPost("login/staff")]
@@ -173,7 +173,7 @@ public class AccountController : BaseApiController
                 return Unauthorized("Invalid username or password");
         }
 
-        return new UserDto { Name = staff.Name, Token = _tokenService.CreateToken(staff) };
+        return Ok(new UserDto { Name = staff.Name, Token = _tokenService.CreateToken(staff) });
     }
 
     private static Task<string> GeneratePatientUsername(
