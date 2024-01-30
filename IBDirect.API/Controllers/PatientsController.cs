@@ -17,6 +17,57 @@ public class PatientsController : BaseApiController
         _context = context;
     }
 
+    [HttpPost("{id}/addAppointment")]
+    public async Task<ActionResult> AddAppointment(int id, AddUpdateAppointmentDto appointmentDto)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
+            p => p.PatientId == id
+        );
+
+        if (patientDetails == null)
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        try
+        {
+            var appointment = new Appointment
+            {
+                StaffId = appointmentDto.StaffId,
+                DateTime = appointmentDto.DateTime,
+                Location = appointmentDto.Location,
+                AppType = appointmentDto.AppType,
+                Notes = appointmentDto.Notes,
+                PatientDetailsId = patientDetails.PatientId,
+            };
+
+            _context.Appointments.Add(appointment);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound("Patient details no longer exists, if this is unexpected please contact your administrator");
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while adding appointments.");
+                return StatusCode(
+                    500,
+                    "An error occurred while adding the appointment, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Users>>> GetPatients()
     {
@@ -230,5 +281,10 @@ public class PatientsController : BaseApiController
     private async Task<bool> PatientDetailsExists(int id)
     {
         return await _context.PatientDetails.AnyAsync(u => u.PatientId == id);
+    }
+
+    private async Task<bool> PatientExists(int id)
+    {
+        return await _context.Users.AnyAsync(u => u.Id == id && u.Role == 1);
     }
 }
