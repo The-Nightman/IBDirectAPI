@@ -263,7 +263,7 @@ public class PatientsController : BaseApiController
         {
             if (!await PatientDetailsExists(id))
             {
-                return NotFound("Patient details no longer exists");
+                return NotFound("Patient details no longer exists, if this is unexpected please contact your administrator");
             }
             else
             {
