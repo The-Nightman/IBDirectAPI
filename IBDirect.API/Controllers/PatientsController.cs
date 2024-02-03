@@ -121,11 +121,16 @@ public class PatientsController : BaseApiController
                 DateOfBirth = p.DateOfBirth,
                 Address = p.Address,
                 Appointments = p.Appointments
-                    .Select(
-                        a =>
+                    .Join(
+                        _context.StaffDetails,
+                        a => a.StaffId,
+                        s => s.StaffId,
+                        (a, s) =>
                             new AppointmentDto
                             {
+                                Id = a.Id,
                                 StaffId = a.StaffId,
+                                StaffName = s.Name,
                                 DateTime = a.DateTime,
                                 Location = a.Location,
                                 AppType = a.AppType,
