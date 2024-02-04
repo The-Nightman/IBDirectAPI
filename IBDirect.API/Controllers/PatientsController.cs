@@ -53,7 +53,9 @@ public class PatientsController : BaseApiController
         {
             if (!await PatientDetailsExists(id))
             {
-                return NotFound("Patient details no longer exists, if this is unexpected please contact your administrator");
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
             }
             else
             {
@@ -268,7 +270,9 @@ public class PatientsController : BaseApiController
         {
             if (!await PatientDetailsExists(id))
             {
-                return NotFound("Patient details no longer exists, if this is unexpected please contact your administrator");
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
             }
             else
             {
@@ -276,6 +280,52 @@ public class PatientsController : BaseApiController
                 return StatusCode(
                     500,
                     "An error occurred while updating the patient details, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
+    [HttpPut("updateAppointment/{id}")]
+    public async Task<ActionResult> UpdateAppointment(
+        int id,
+        AddUpdateAppointmentDto appointmentDto
+    )
+    {
+        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+
+        if (appointment == null)
+        {
+            return NotFound("Appointment not found");
+        }
+
+        appointment.StaffId = appointmentDto.StaffId;
+        appointment.DateTime = appointmentDto.DateTime;
+        appointment.Location = appointmentDto.Location;
+        appointment.AppType = appointmentDto.AppType;
+        appointment.Notes = appointmentDto.Notes;
+
+        _context.Entry(appointment).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await _context.Appointments.AnyAsync(a => a.Id == id))
+            {
+                return NotFound(
+                    "Appointment no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the appointment, please try again later or contact an administrator"
                 );
             }
         }
