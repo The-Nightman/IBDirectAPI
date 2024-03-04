@@ -116,10 +116,41 @@ public class PatientsController : BaseApiController
                 DiagnosisDate = p.DiagnosisDate,
                 Stoma = p.Stoma,
                 Notes = p.Notes,
-                ConsultantName = c.Name,
-                NurseName = n.Name,
-                StomaNurseName = s != null ? s.Name : null,
-                GenpractName = g.Name,
+                Consultant = new StaffDetailsDto
+                {
+                    StaffId = c.StaffId,
+                    Name = c.Name,
+                    Role = c.Role,
+                    Speciality = c.Speciality,
+                    Practice = c.Practice
+                },
+                Nurse = new StaffDetailsDto
+                {
+                    StaffId = n.StaffId,
+                    Name = n.Name,
+                    Role = n.Role,
+                    Speciality = n.Speciality,
+                    Practice = n.Practice
+                },
+                StomaNurse =
+                    s != null
+                        ? new StaffDetailsDto
+                        {
+                            StaffId = s.StaffId,
+                            Name = s.Name,
+                            Role = s.Role,
+                            Speciality = s.Speciality,
+                            Practice = s.Practice
+                        }
+                        : null,
+                Genpract = new StaffDetailsDto
+                {
+                    StaffId = g.StaffId,
+                    Name = g.Name,
+                    Role = g.Role,
+                    Speciality = g.Speciality,
+                    Practice = g.Practice
+                },
                 DateOfBirth = p.DateOfBirth,
                 Address = p.Address,
                 Appointments = p.Appointments
