@@ -34,9 +34,11 @@ public class PatientsController : BaseApiController
             return NotFound("Patient details not found, please contact your administrator");
         }
 
+        Appointment appointment = null;
+
         try
         {
-            var appointment = new Appointment
+            appointment = new Appointment
             {
                 StaffId = appointmentDto.StaffId,
                 DateTime = appointmentDto.DateTime,
@@ -67,7 +69,7 @@ public class PatientsController : BaseApiController
             }
         }
 
-        return NoContent();
+        return Ok(appointment.Id);
     }
 
     [HttpGet]
