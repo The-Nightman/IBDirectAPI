@@ -366,6 +366,22 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
+    [HttpDelete("deleteAppointment/{id}")]
+    public async Task<ActionResult> DeleteAppointment(int id)
+    {
+        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+
+        if (appointment == null)
+        {
+            return NotFound("Appointment not found");
+        }
+
+        _context.Appointments.Remove(appointment);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     private async Task<bool> PatientDetailsExists(int id)
     {
         return await _context.PatientDetails.AnyAsync(u => u.PatientId == id);
