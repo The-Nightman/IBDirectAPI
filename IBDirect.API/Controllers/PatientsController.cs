@@ -17,6 +17,61 @@ public class PatientsController : BaseApiController
         _context = context;
     }
 
+    [HttpPost("{id}/addAppointment")]
+    public async Task<ActionResult> AddAppointment(int id, AddUpdateAppointmentDto appointmentDto)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
+            p => p.PatientId == id
+        );
+
+        if (patientDetails == null)
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        Appointment appointment = null;
+
+        try
+        {
+            appointment = new Appointment
+            {
+                StaffId = appointmentDto.StaffId,
+                DateTime = appointmentDto.DateTime,
+                Location = appointmentDto.Location,
+                AppType = appointmentDto.AppType,
+                Notes = appointmentDto.Notes,
+                PatientDetailsId = patientDetails.PatientId,
+            };
+
+            _context.Appointments.Add(appointment);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while adding appointments.");
+                return StatusCode(
+                    500,
+                    "An error occurred while adding the appointment, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return Ok(appointment.Id);
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Users>>> GetPatients()
     {
@@ -37,7 +92,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/details")]
-    public async Task<ActionResult<PatientDetails>> GetPatientDetails(int id)
+    public async Task<ActionResult<PatientDetailsStaffVDto>> GetPatientDetails(int id)
     {
         var patient = await _context.Users.FindAsync(id);
 
@@ -63,18 +118,54 @@ public class PatientsController : BaseApiController
                 DiagnosisDate = p.DiagnosisDate,
                 Stoma = p.Stoma,
                 Notes = p.Notes,
-                ConsultantName = c.Name,
-                NurseName = n.Name,
-                StomaNurseName = s != null ? s.Name : null,
-                GenpractName = g.Name,
+                Consultant = new StaffDetailsDto
+                {
+                    StaffId = c.StaffId,
+                    Name = c.Name,
+                    Role = c.Role,
+                    Speciality = c.Speciality,
+                    Practice = c.Practice
+                },
+                Nurse = new StaffDetailsDto
+                {
+                    StaffId = n.StaffId,
+                    Name = n.Name,
+                    Role = n.Role,
+                    Speciality = n.Speciality,
+                    Practice = n.Practice
+                },
+                StomaNurse =
+                    s != null
+                        ? new StaffDetailsDto
+                        {
+                            StaffId = s.StaffId,
+                            Name = s.Name,
+                            Role = s.Role,
+                            Speciality = s.Speciality,
+                            Practice = s.Practice
+                        }
+                        : null,
+                Genpract = new StaffDetailsDto
+                {
+                    StaffId = g.StaffId,
+                    Name = g.Name,
+                    Role = g.Role,
+                    Speciality = g.Speciality,
+                    Practice = g.Practice
+                },
                 DateOfBirth = p.DateOfBirth,
                 Address = p.Address,
                 Appointments = p.Appointments
-                    .Select(
-                        a =>
+                    .Join(
+                        _context.StaffDetails,
+                        a => a.StaffId,
+                        s => s.StaffId,
+                        (a, s) =>
                             new AppointmentDto
                             {
+                                Id = a.Id,
                                 StaffId = a.StaffId,
+                                StaffName = s.Name,
                                 DateTime = a.DateTime,
                                 Location = a.Location,
                                 AppType = a.AppType,
@@ -137,7 +228,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("mypatients/{staffRole}/{staffId}")]
-    public async Task<ActionResult<PatientDetails>> GetStaffPatients(int staffRole, int staffId)
+    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(int staffRole, int staffId)
     {
         IQueryable<PatientDetails> query = _context.PatientDetails;
 
@@ -212,7 +303,9 @@ public class PatientsController : BaseApiController
         {
             if (!await PatientDetailsExists(id))
             {
-                return NotFound("Patient details no longer exists");
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
             }
             else
             {
@@ -227,8 +320,75 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
+    [HttpPut("updateAppointment/{id}")]
+    public async Task<ActionResult> UpdateAppointment(
+        int id,
+        AddUpdateAppointmentDto appointmentDto
+    )
+    {
+        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+
+        if (appointment == null)
+        {
+            return NotFound("Appointment not found");
+        }
+
+        appointment.StaffId = appointmentDto.StaffId;
+        appointment.DateTime = appointmentDto.DateTime;
+        appointment.Location = appointmentDto.Location;
+        appointment.AppType = appointmentDto.AppType;
+        appointment.Notes = appointmentDto.Notes;
+
+        _context.Entry(appointment).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await _context.Appointments.AnyAsync(a => a.Id == id))
+            {
+                return NotFound(
+                    "Appointment no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the appointment, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("deleteAppointment/{id}")]
+    public async Task<ActionResult> DeleteAppointment(int id)
+    {
+        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+
+        if (appointment == null)
+        {
+            return NotFound("Appointment not found");
+        }
+
+        _context.Appointments.Remove(appointment);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     private async Task<bool> PatientDetailsExists(int id)
     {
         return await _context.PatientDetails.AnyAsync(u => u.PatientId == id);
+    }
+
+    private async Task<bool> PatientExists(int id)
+    {
+        return await _context.Users.AnyAsync(u => u.Id == id && u.Role == 1);
     }
 }
