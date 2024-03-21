@@ -82,6 +82,11 @@ public class StaffController : BaseApiController
             }
         ).ToListAsync();
 
-        return appointments;
+        if (appointments == null)
+        {
+            return NoContent();
+        }
+
+        return Ok(appointments);
     }
 }
