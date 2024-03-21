@@ -41,7 +41,7 @@ public class StaffController : BaseApiController
     }
 
     [HttpGet("{id}/details")]
-    public async Task<ActionResult<StaffDetails>> GetStaffDetails(int id)
+    public async Task<ActionResult<StaffDetailsDto>> GetStaffDetails(int id)
     {
         var staffDetails = await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
 

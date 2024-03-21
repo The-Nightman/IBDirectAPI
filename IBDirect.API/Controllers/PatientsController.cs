@@ -92,7 +92,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/details")]
-    public async Task<ActionResult<PatientDetails>> GetPatientDetails(int id)
+    public async Task<ActionResult<PatientDetailsStaffVDto>> GetPatientDetails(int id)
     {
         var patient = await _context.Users.FindAsync(id);
 
@@ -228,7 +228,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("mypatients/{staffRole}/{staffId}")]
-    public async Task<ActionResult<PatientDetails>> GetStaffPatients(int staffRole, int staffId)
+    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(int staffRole, int staffId)
     {
         IQueryable<PatientDetails> query = _context.PatientDetails;
 
