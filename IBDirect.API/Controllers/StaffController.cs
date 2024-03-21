@@ -54,7 +54,9 @@ public class StaffController : BaseApiController
     }
 
     [HttpGet("{id}/myAppointments")]
-    public async Task<ActionResult<IEnumerable<StaffAppointmentDto>>> GetMyAppointments(int id)
+    public async Task<
+        ActionResult<IEnumerable<StaffAppointmentDto>>
+    > GetMyAppointments(int id)
     {
         var staffDetails = await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
 
@@ -63,23 +65,23 @@ public class StaffController : BaseApiController
             return NotFound("Staff member details not found, please contact an administrator");
         }
 
-        return await _context.Appointments
-            .Where(a => a.StaffId == id)
-            .Include(a => a.PatientDetails)
-            .Select(
-                a =>
-                    new StaffAppointmentDto
-                    {
-                        Id = a.Id,
-                        StaffId = a.StaffId,
-                        PatientId = a.PatientDetailsId,
-                        PatientName = a.PatientDetails.Name,
-                        DateTime = a.DateTime,
-                        Location = a.Location,
-                        AppType = a.AppType,
-                        Notes = a.Notes
-                    }
-            )
-            .ToListAsync();
+        var appointments = await (
+            from a in _context.Appointments
+            join p in _context.PatientDetails on a.PatientDetailsId equals p.PatientId
+            where a.StaffId == id
+            select new StaffAppointmentDto
+            {
+                Id = a.Id,
+                StaffId = a.StaffId,
+                PatientId = p.PatientId,
+                PatientName = p.Name,
+                DateTime = a.DateTime,
+                Location = a.Location,
+                AppType = a.AppType,
+                Notes = a.Notes
+            }
+        ).ToListAsync();
+
+        return appointments;
     }
 }
