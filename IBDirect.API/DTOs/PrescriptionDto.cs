@@ -7,5 +7,7 @@ namespace IBDirect.API.DTOs
         public string ScriptDose { get; set; }
         public string ScriptInterval { get; set; }
         public string ScriptNotes { get; set; }
+        public bool ScriptRepeat { get; set; }
+        public StaffDetailsDto PrescribingStaff { get; set; }
     }
 }
