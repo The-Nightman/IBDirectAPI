@@ -72,6 +72,63 @@ public class PatientsController : BaseApiController
         return Ok(appointment.Id);
     }
 
+    [HttpPost("{id}/addPrescription")]
+    public async Task<ActionResult> AddPrescription(int id, CreateUpdatePrescriptionDto prescriptionDto)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
+            p => p.PatientId == id
+        );
+
+        if (patientDetails == null)
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        Prescription prescription = null;
+
+        try
+        {
+            prescription = new Prescription
+            {
+                ScriptName = prescriptionDto.ScriptName,
+                ScriptStartDate = prescriptionDto.ScriptStartDate,
+                ScriptDose = prescriptionDto.ScriptDose,
+                ScriptInterval = prescriptionDto.ScriptInterval,
+                ScriptNotes = prescriptionDto.ScriptNotes,
+                ScriptRepeat = prescriptionDto.ScriptRepeat,
+                PrescribingStaffId = prescriptionDto.PrescribingStaffId,
+                PatientDetailsId = patientDetails.PatientId,
+            };
+
+            _context.Prescriptions.Add(prescription);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while adding appointments.");
+                return StatusCode(
+                    500,
+                    "An error occurred while adding the prescription, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return Ok(prescription.Id);
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Users>>> GetPatients()
     {
