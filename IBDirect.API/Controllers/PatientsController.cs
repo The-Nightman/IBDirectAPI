@@ -261,15 +261,27 @@ public class PatientsController : BaseApiController
                     )
                     .ToList(),
                 Prescriptions = p.Prescriptions
-                    .Select(
-                        p =>
+                    .Join(
+                        _context.StaffDetails,
+                        pr => pr.PrescribingStaffId,
+                        s => s.StaffId,
+                        (pr, s) =>
                             new PrescriptionDto
                             {
-                                ScriptName = p.ScriptName,
-                                ScriptStartDate = p.ScriptStartDate,
-                                ScriptDose = p.ScriptDose,
-                                ScriptInterval = p.ScriptInterval,
-                                ScriptNotes = p.ScriptNotes
+                                ScriptName = pr.ScriptName,
+                                ScriptStartDate = pr.ScriptStartDate,
+                                ScriptDose = pr.ScriptDose,
+                                ScriptInterval = pr.ScriptInterval,
+                                ScriptNotes = pr.ScriptNotes,
+                                ScriptRepeat = pr.ScriptRepeat,
+                                PrescribingStaff = new StaffDetailsDto
+                                {
+                                    StaffId = s.StaffId,
+                                    Name = s.Name,
+                                    Role = s.Role,
+                                    Speciality = s.Speciality,
+                                    Practice = s.Practice
+                                }
                             }
                     )
                     .ToList()
