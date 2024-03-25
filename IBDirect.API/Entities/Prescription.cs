@@ -11,6 +11,8 @@ public class Prescription
     public string ScriptDose { get; set; }
     public string ScriptInterval { get; set; }
     public string ScriptNotes { get; set; }
+    public bool ScriptRepeat { get; set; }
+    public int PrescribingStaffId { get; set; }
 
     public int PatientDetailsId { get; set; }
     public PatientDetails PatientDetails { get; set; }
