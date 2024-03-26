@@ -105,6 +105,7 @@ public class PatientsController : BaseApiController
                 ScriptNotes = prescriptionDto.ScriptNotes,
                 ScriptRepeat = prescriptionDto.ScriptRepeat,
                 PrescribingStaffId = prescriptionDto.PrescribingStaffId,
+                Cancelled = false,
                 PatientDetailsId = patientDetails.PatientId,
             };
 
@@ -285,7 +286,8 @@ public class PatientsController : BaseApiController
                                     Role = s.Role,
                                     Speciality = s.Speciality,
                                     Practice = s.Practice
-                                }
+                                },
+                                Cancelled = pr.Cancelled,
                             }
                     )
                     .ToList()
@@ -483,6 +485,49 @@ public class PatientsController : BaseApiController
                 return StatusCode(
                     500,
                     "An error occurred while updating the Prescription, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
+    [HttpPut("cancelPrescription/{id}")]
+    public async Task<ActionResult> CancelPrescription(
+        int id
+    )
+    {
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(
+            pr => pr.Id == id
+        );
+
+        if (prescription == null)
+        {
+            return NotFound("Prescription not found");
+        }
+
+        prescription.Cancelled = true;
+
+        _context.Entry(prescription).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the prescription, please try again later or contact an administrator"
                 );
             }
         }
