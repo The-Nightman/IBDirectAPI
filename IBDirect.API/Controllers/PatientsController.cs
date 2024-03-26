@@ -435,6 +435,54 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
+    [HttpPut("updatePrescription/{id}")]
+    public async Task<ActionResult> UpdatePrescription(
+        int id,
+        CreateUpdatePrescriptionDto prescriptionDto
+    )
+    {
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
+
+        if (prescription == null)
+        {
+            return NotFound("Prescription not found");
+        }
+
+        prescription.ScriptName = prescriptionDto.ScriptName;
+        prescription.ScriptStartDate = prescriptionDto.ScriptStartDate;
+        prescription.ScriptDose = prescriptionDto.ScriptDose;
+        prescription.ScriptInterval = prescriptionDto.ScriptInterval;
+        prescription.ScriptNotes = prescriptionDto.ScriptNotes;
+        prescription.ScriptRepeat = prescriptionDto.ScriptRepeat;
+        prescription.PrescribingStaffId = prescriptionDto.PrescribingStaffId;
+
+        _context.Entry(prescription).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await _context.Prescriptions.AnyAsync(pr => pr.Id == id))
+            {
+                return NotFound(
+                    "Prescription no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the Prescription, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
     [HttpDelete("deleteAppointment/{id}")]
     public async Task<ActionResult> DeleteAppointment(int id)
     {
