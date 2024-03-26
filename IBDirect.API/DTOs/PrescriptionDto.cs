@@ -2,6 +2,7 @@ namespace IBDirect.API.DTOs
 {
     public class PrescriptionDto
     {
+        public int Id { get; set; }
         public string ScriptName { get; set; }
         public DateOnly ScriptStartDate { get; set; }
         public string ScriptDose { get; set; }

@@ -268,6 +268,7 @@ public class PatientsController : BaseApiController
                         (pr, s) =>
                             new PrescriptionDto
                             {
+                                Id = pr.Id,
                                 ScriptName = pr.ScriptName,
                                 ScriptStartDate = pr.ScriptStartDate,
                                 ScriptDose = pr.ScriptDose,
