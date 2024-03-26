@@ -105,6 +105,7 @@ public class PatientsController : BaseApiController
                 ScriptNotes = prescriptionDto.ScriptNotes,
                 ScriptRepeat = prescriptionDto.ScriptRepeat,
                 PrescribingStaffId = prescriptionDto.PrescribingStaffId,
+                Cancelled = false,
                 PatientDetailsId = patientDetails.PatientId,
             };
 
@@ -285,7 +286,8 @@ public class PatientsController : BaseApiController
                                     Role = s.Role,
                                     Speciality = s.Speciality,
                                     Practice = s.Practice
-                                }
+                                },
+                                Cancelled = pr.Cancelled,
                             }
                     )
                     .ToList()
