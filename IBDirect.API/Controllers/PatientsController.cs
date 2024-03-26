@@ -73,7 +73,10 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPost("{id}/addPrescription")]
-    public async Task<ActionResult> AddPrescription(int id, CreateUpdatePrescriptionDto prescriptionDto)
+    public async Task<ActionResult> AddPrescription(
+        int id,
+        CreateUpdatePrescriptionDto prescriptionDto
+    )
     {
         if (!await PatientExists(id))
         {
@@ -298,7 +301,10 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("mypatients/{staffRole}/{staffId}")]
-    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(int staffRole, int staffId)
+    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(
+        int staffRole,
+        int staffId
+    )
     {
         IQueryable<PatientDetails> query = _context.PatientDetails;
 
@@ -495,6 +501,22 @@ public class PatientsController : BaseApiController
         }
 
         _context.Appointments.Remove(appointment);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpDelete("deletePrescription/{id}")]
+    public async Task<ActionResult> DeletePrescription(int id)
+    {
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
+
+        if (prescription == null)
+        {
+            return NotFound("Prescription not found");
+        }
+
+        _context.Prescriptions.Remove(prescription);
         await _context.SaveChangesAsync();
 
         return NoContent();
