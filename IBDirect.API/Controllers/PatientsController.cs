@@ -72,6 +72,66 @@ public class PatientsController : BaseApiController
         return Ok(appointment.Id);
     }
 
+    [HttpPost("{id}/addPrescription")]
+    public async Task<ActionResult> AddPrescription(
+        int id,
+        CreateUpdatePrescriptionDto prescriptionDto
+    )
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
+            p => p.PatientId == id
+        );
+
+        if (patientDetails == null)
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        Prescription prescription = null;
+
+        try
+        {
+            prescription = new Prescription
+            {
+                ScriptName = prescriptionDto.ScriptName,
+                ScriptStartDate = prescriptionDto.ScriptStartDate,
+                ScriptDose = prescriptionDto.ScriptDose,
+                ScriptInterval = prescriptionDto.ScriptInterval,
+                ScriptNotes = prescriptionDto.ScriptNotes,
+                ScriptRepeat = prescriptionDto.ScriptRepeat,
+                PrescribingStaffId = prescriptionDto.PrescribingStaffId,
+                PatientDetailsId = patientDetails.PatientId,
+            };
+
+            _context.Prescriptions.Add(prescription);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while adding appointments.");
+                return StatusCode(
+                    500,
+                    "An error occurred while adding the prescription, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return Ok(prescription.Id);
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Users>>> GetPatients()
     {
@@ -204,15 +264,28 @@ public class PatientsController : BaseApiController
                     )
                     .ToList(),
                 Prescriptions = p.Prescriptions
-                    .Select(
-                        p =>
+                    .Join(
+                        _context.StaffDetails,
+                        pr => pr.PrescribingStaffId,
+                        s => s.StaffId,
+                        (pr, s) =>
                             new PrescriptionDto
                             {
-                                ScriptName = p.ScriptName,
-                                ScriptStartDate = p.ScriptStartDate,
-                                ScriptDose = p.ScriptDose,
-                                ScriptInterval = p.ScriptInterval,
-                                ScriptNotes = p.ScriptNotes
+                                Id = pr.Id,
+                                ScriptName = pr.ScriptName,
+                                ScriptStartDate = pr.ScriptStartDate,
+                                ScriptDose = pr.ScriptDose,
+                                ScriptInterval = pr.ScriptInterval,
+                                ScriptNotes = pr.ScriptNotes,
+                                ScriptRepeat = pr.ScriptRepeat,
+                                PrescribingStaff = new StaffDetailsDto
+                                {
+                                    StaffId = s.StaffId,
+                                    Name = s.Name,
+                                    Role = s.Role,
+                                    Speciality = s.Speciality,
+                                    Practice = s.Practice
+                                }
                             }
                     )
                     .ToList()
@@ -228,7 +301,10 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("mypatients/{staffRole}/{staffId}")]
-    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(int staffRole, int staffId)
+    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(
+        int staffRole,
+        int staffId
+    )
     {
         IQueryable<PatientDetails> query = _context.PatientDetails;
 
@@ -366,6 +442,54 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
+    [HttpPut("updatePrescription/{id}")]
+    public async Task<ActionResult> UpdatePrescription(
+        int id,
+        CreateUpdatePrescriptionDto prescriptionDto
+    )
+    {
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
+
+        if (prescription == null)
+        {
+            return NotFound("Prescription not found");
+        }
+
+        prescription.ScriptName = prescriptionDto.ScriptName;
+        prescription.ScriptStartDate = prescriptionDto.ScriptStartDate;
+        prescription.ScriptDose = prescriptionDto.ScriptDose;
+        prescription.ScriptInterval = prescriptionDto.ScriptInterval;
+        prescription.ScriptNotes = prescriptionDto.ScriptNotes;
+        prescription.ScriptRepeat = prescriptionDto.ScriptRepeat;
+        prescription.PrescribingStaffId = prescriptionDto.PrescribingStaffId;
+
+        _context.Entry(prescription).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await _context.Prescriptions.AnyAsync(pr => pr.Id == id))
+            {
+                return NotFound(
+                    "Prescription no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the Prescription, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
     [HttpDelete("deleteAppointment/{id}")]
     public async Task<ActionResult> DeleteAppointment(int id)
     {
@@ -377,6 +501,22 @@ public class PatientsController : BaseApiController
         }
 
         _context.Appointments.Remove(appointment);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpDelete("deletePrescription/{id}")]
+    public async Task<ActionResult> DeletePrescription(int id)
+    {
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
+
+        if (prescription == null)
+        {
+            return NotFound("Prescription not found");
+        }
+
+        _context.Prescriptions.Remove(prescription);
         await _context.SaveChangesAsync();
 
         return NoContent();
