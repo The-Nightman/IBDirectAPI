@@ -302,58 +302,6 @@ public class PatientsController : BaseApiController
         return Ok(patientDetails);
     }
 
-    [HttpGet("mypatients/{staffRole}/{staffId}")]
-    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(
-        int staffRole,
-        int staffId
-    )
-    {
-        IQueryable<PatientDetails> query = _context.PatientDetails;
-
-        switch (staffRole)
-        {
-            case 2:
-                query = query.Where(u => u.NurseId == staffId);
-                break;
-
-            case 3:
-                query = query.Where(u => u.StomaNurseId == staffId);
-                break;
-
-            case 4:
-                query = query.Where(u => u.ConsultantId == staffId);
-                break;
-
-            case 5:
-                query = query.Where(u => u.GenpractId == staffId);
-                break;
-
-            default:
-                return BadRequest();
-        }
-
-        var patients = await query
-            .Select(
-                u =>
-                    new PatientDetailsBriefDto
-                    {
-                        PatientId = u.PatientId,
-                        Name = u.Name,
-                        DateOfBirth = u.DateOfBirth,
-                        Diagnosis = u.Diagnosis,
-                        Stoma = u.Stoma
-                    }
-            )
-            .ToListAsync();
-
-        if (patients == null || !patients.Any())
-        {
-            return NoContent();
-        }
-
-        return Ok(patients);
-    }
-
     [HttpPut("{id}/updateNotes")]
     public async Task<ActionResult> UpdatePatientNotes(
         int id,
@@ -493,13 +441,9 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPatch("cancelPrescription/{id}")]
-    public async Task<ActionResult> CancelPrescription(
-        int id
-    )
+    public async Task<ActionResult> CancelPrescription(int id)
     {
-        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(
-            pr => pr.Id == id
-        );
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
 
         if (prescription == null)
         {

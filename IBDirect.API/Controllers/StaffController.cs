@@ -40,6 +40,58 @@ public class StaffController : BaseApiController
         return Ok(staff);
     }
 
+    [HttpGet("mypatients/{staffRole}/{staffId}")]
+    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(
+        int staffRole,
+        int staffId
+    )
+    {
+        IQueryable<PatientDetails> query = _context.PatientDetails;
+
+        switch (staffRole)
+        {
+            case 2:
+                query = query.Where(u => u.NurseId == staffId);
+                break;
+
+            case 3:
+                query = query.Where(u => u.StomaNurseId == staffId);
+                break;
+
+            case 4:
+                query = query.Where(u => u.ConsultantId == staffId);
+                break;
+
+            case 5:
+                query = query.Where(u => u.GenpractId == staffId);
+                break;
+
+            default:
+                return BadRequest();
+        }
+
+        var patients = await query
+            .Select(
+                u =>
+                    new PatientDetailsBriefDto
+                    {
+                        PatientId = u.PatientId,
+                        Name = u.Name,
+                        DateOfBirth = u.DateOfBirth,
+                        Diagnosis = u.Diagnosis,
+                        Stoma = u.Stoma
+                    }
+            )
+            .ToListAsync();
+
+        if (!patients.Any())
+        {
+            return NoContent();
+        }
+
+        return Ok(patients);
+    }
+
     [HttpGet("{id}/details")]
     public async Task<ActionResult<StaffDetailsDto>> GetStaffDetails(int id)
     {
@@ -54,9 +106,7 @@ public class StaffController : BaseApiController
     }
 
     [HttpGet("{id}/myAppointments")]
-    public async Task<
-        ActionResult<IEnumerable<StaffAppointmentDto>>
-    > GetMyAppointments(int id)
+    public async Task<ActionResult<IEnumerable<StaffAppointmentDto>>> GetMyAppointments(int id)
     {
         var staffDetails = await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
 
