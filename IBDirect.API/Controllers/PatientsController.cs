@@ -492,7 +492,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPut("cancelPrescription/{id}")]
+    [HttpPatch("cancelPrescription/{id}")]
     public async Task<ActionResult> CancelPrescription(
         int id
     )
