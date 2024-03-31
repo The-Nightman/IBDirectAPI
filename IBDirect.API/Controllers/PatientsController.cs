@@ -102,7 +102,7 @@ public class PatientsController : BaseApiController
                 ScriptStartDate = prescriptionDto.ScriptStartDate,
                 ScriptDose = prescriptionDto.ScriptDose,
                 ScriptInterval = prescriptionDto.ScriptInterval,
-                ScriptNotes = prescriptionDto.ScriptNotes,
+                Notes = prescriptionDto.Notes,
                 ScriptRepeat = prescriptionDto.ScriptRepeat,
                 PrescribingStaffId = prescriptionDto.PrescribingStaffId,
                 Cancelled = false,
@@ -277,7 +277,7 @@ public class PatientsController : BaseApiController
                                 ScriptStartDate = pr.ScriptStartDate,
                                 ScriptDose = pr.ScriptDose,
                                 ScriptInterval = pr.ScriptInterval,
-                                ScriptNotes = pr.ScriptNotes,
+                                Notes = pr.Notes,
                                 ScriptRepeat = pr.ScriptRepeat,
                                 PrescribingStaff = new StaffDetailsDto
                                 {
@@ -461,7 +461,7 @@ public class PatientsController : BaseApiController
         prescription.ScriptStartDate = prescriptionDto.ScriptStartDate;
         prescription.ScriptDose = prescriptionDto.ScriptDose;
         prescription.ScriptInterval = prescriptionDto.ScriptInterval;
-        prescription.ScriptNotes = prescriptionDto.ScriptNotes;
+        prescription.Notes = prescriptionDto.Notes;
         prescription.ScriptRepeat = prescriptionDto.ScriptRepeat;
         prescription.PrescribingStaffId = prescriptionDto.PrescribingStaffId;
 
