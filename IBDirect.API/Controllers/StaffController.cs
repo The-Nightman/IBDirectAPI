@@ -1,6 +1,7 @@
 using IBDirect.API.Data;
 using IBDirect.API.DTOs;
 using IBDirect.API.Entities;
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -46,31 +47,21 @@ public class StaffController : BaseApiController
         int staffId
     )
     {
-        IQueryable<PatientDetails> query = _context.PatientDetails;
-
-        switch (staffRole)
+        var filters = new Dictionary<int, Expression<Func<PatientDetails, bool>>>
         {
-            case 2:
-                query = query.Where(u => u.NurseId == staffId);
-                break;
+            { 2, u => u.NurseId == staffId },
+            { 3, u => u.StomaNurseId == staffId },
+            { 4, u => u.ConsultantId == staffId },
+            { 5, u => u.GenpractId == staffId },
+        };
 
-            case 3:
-                query = query.Where(u => u.StomaNurseId == staffId);
-                break;
-
-            case 4:
-                query = query.Where(u => u.ConsultantId == staffId);
-                break;
-
-            case 5:
-                query = query.Where(u => u.GenpractId == staffId);
-                break;
-
-            default:
-                return BadRequest();
+        if (!filters.TryGetValue(staffRole, out var filter))
+        {
+            return BadRequest("Invalid role recieved, please contact an administrator");
         }
 
-        var patients = await query
+        var patients = await _context.PatientDetails
+            .Where(filter)
             .Select(
                 u =>
                     new PatientDetailsBriefDto
