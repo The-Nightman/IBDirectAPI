@@ -95,12 +95,12 @@ public class StaffController : BaseApiController
     [HttpGet("{id}/details")]
     public async Task<ActionResult<StaffDetailsDto>> GetStaffDetails(int id)
     {
-        var staffDetails = await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
-
-        if (staffDetails == null)
+        if (!await StaffDetailsExists(id))
         {
             return NotFound("Staff member details not found, please contact an administrator");
         }
+
+        var staffDetails = await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
 
         return Ok(staffDetails);
     }
@@ -108,9 +108,7 @@ public class StaffController : BaseApiController
     [HttpGet("{id}/myAppointments")]
     public async Task<ActionResult<IEnumerable<StaffAppointmentDto>>> GetMyAppointments(int id)
     {
-        var staffDetails = await _context.StaffDetails.FirstOrDefaultAsync(u => u.StaffId == id);
-
-        if (staffDetails == null)
+        if (!await StaffDetailsExists(id))
         {
             return NotFound("Staff member details not found, please contact an administrator");
         }
@@ -138,5 +136,10 @@ public class StaffController : BaseApiController
         }
 
         return Ok(appointments);
+    }
+
+    private async Task<bool> StaffDetailsExists(int id)
+    {
+        return await _context.StaffDetails.AnyAsync(u => u.StaffId == id);
     }
 }
