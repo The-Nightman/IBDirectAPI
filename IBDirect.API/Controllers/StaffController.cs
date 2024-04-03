@@ -18,19 +18,19 @@ public class StaffController : BaseApiController
         _context = context;
     }
 
+    private static readonly List<int> validStaffRoleValues = new() { 2, 3, 4, 5 };
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Users>>> GetStaff()
     {
-        List<int> validStaffValues = new() { 2, 3, 4, 5 };
-        return await _context.Users.Where(u => validStaffValues.Contains(u.Role)).ToListAsync();
+        return await _context.Users.Where(u => validStaffRoleValues.Contains(u.Role)).ToListAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Users>> GetStaff(int id)
     {
-        List<int> validStaffValues = new() { 2, 3, 4, 5 };
         var staff = await _context.Users.FirstOrDefaultAsync(
-            u => u.Id == id && validStaffValues.Contains(u.Role)
+            u => u.Id == id && validStaffRoleValues.Contains(u.Role)
         );
 
         if (staff == null)
