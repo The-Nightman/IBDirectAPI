@@ -27,7 +27,7 @@ public class StaffController : BaseApiController
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Users>> GetStaff(int id)
+    public async Task<ActionResult<Users>> GetStaffMember(int id)
     {
         var staff = await _context.Users.FirstOrDefaultAsync(
             u => u.Id == id && validStaffRoleValues.Contains(u.Role)
