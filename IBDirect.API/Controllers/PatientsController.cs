@@ -18,23 +18,19 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPost("{id}/addAppointment")]
-    public async Task<ActionResult> AddAppointment(int id, AddUpdateAppointmentDto appointmentDto)
+    public async Task<ActionResult> AddAppointment(int id, CreateUpdateAppointmentDto appointmentDto)
     {
         if (!await PatientExists(id))
         {
             return NotFound("Patient not found");
         }
 
-        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
-            p => p.PatientId == id
-        );
-
-        if (patientDetails == null)
+        if (!await PatientDetailsExists(id))
         {
             return NotFound("Patient details not found, please contact your administrator");
         }
 
-        Appointment appointment = null;
+        Appointment appointment;
 
         try
         {
@@ -45,7 +41,7 @@ public class PatientsController : BaseApiController
                 Location = appointmentDto.Location,
                 AppType = appointmentDto.AppType,
                 Notes = appointmentDto.Notes,
-                PatientDetailsId = patientDetails.PatientId,
+                PatientDetailsId = id,
             };
 
             _context.Appointments.Add(appointment);
@@ -83,16 +79,12 @@ public class PatientsController : BaseApiController
             return NotFound("Patient not found");
         }
 
-        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
-            p => p.PatientId == id
-        );
-
-        if (patientDetails == null)
+        if (!await PatientDetailsExists(id))
         {
             return NotFound("Patient details not found, please contact your administrator");
         }
 
-        Prescription prescription = null;
+        Prescription prescription;
 
         try
         {
@@ -102,11 +94,11 @@ public class PatientsController : BaseApiController
                 ScriptStartDate = prescriptionDto.ScriptStartDate,
                 ScriptDose = prescriptionDto.ScriptDose,
                 ScriptInterval = prescriptionDto.ScriptInterval,
-                ScriptNotes = prescriptionDto.ScriptNotes,
+                Notes = prescriptionDto.Notes,
                 ScriptRepeat = prescriptionDto.ScriptRepeat,
                 PrescribingStaffId = prescriptionDto.PrescribingStaffId,
                 Cancelled = false,
-                PatientDetailsId = patientDetails.PatientId,
+                PatientDetailsId = id,
             };
 
             _context.Prescriptions.Add(prescription);
@@ -155,11 +147,14 @@ public class PatientsController : BaseApiController
     [HttpGet("{id}/details")]
     public async Task<ActionResult<PatientDetailsStaffVDto>> GetPatientDetails(int id)
     {
-        var patient = await _context.Users.FindAsync(id);
-
-        if (patient == null)
+        if (!await PatientExists(id))
         {
             return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
         }
 
         var patientDetails = await (
@@ -277,7 +272,7 @@ public class PatientsController : BaseApiController
                                 ScriptStartDate = pr.ScriptStartDate,
                                 ScriptDose = pr.ScriptDose,
                                 ScriptInterval = pr.ScriptInterval,
-                                ScriptNotes = pr.ScriptNotes,
+                                Notes = pr.Notes,
                                 ScriptRepeat = pr.ScriptRepeat,
                                 PrescribingStaff = new StaffDetailsDto
                                 {
@@ -294,64 +289,7 @@ public class PatientsController : BaseApiController
             }
         ).FirstOrDefaultAsync();
 
-        if (patientDetails == null)
-        {
-            return NotFound("Patient details not found, please contact your administrator");
-        }
-
         return Ok(patientDetails);
-    }
-
-    [HttpGet("mypatients/{staffRole}/{staffId}")]
-    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(
-        int staffRole,
-        int staffId
-    )
-    {
-        IQueryable<PatientDetails> query = _context.PatientDetails;
-
-        switch (staffRole)
-        {
-            case 2:
-                query = query.Where(u => u.NurseId == staffId);
-                break;
-
-            case 3:
-                query = query.Where(u => u.StomaNurseId == staffId);
-                break;
-
-            case 4:
-                query = query.Where(u => u.ConsultantId == staffId);
-                break;
-
-            case 5:
-                query = query.Where(u => u.GenpractId == staffId);
-                break;
-
-            default:
-                return BadRequest();
-        }
-
-        var patients = await query
-            .Select(
-                u =>
-                    new PatientDetailsBriefDto
-                    {
-                        PatientId = u.PatientId,
-                        Name = u.Name,
-                        DateOfBirth = u.DateOfBirth,
-                        Diagnosis = u.Diagnosis,
-                        Stoma = u.Stoma
-                    }
-            )
-            .ToListAsync();
-
-        if (patients == null || !patients.Any())
-        {
-            return NoContent();
-        }
-
-        return Ok(patients);
     }
 
     [HttpPut("{id}/updateNotes")]
@@ -360,14 +298,19 @@ public class PatientsController : BaseApiController
         UpdatePatientNotesDto updatePatientNotesDto
     )
     {
-        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
-            p => p.PatientId == id
-        );
-
-        if (patientDetails == null)
+        if (!await PatientExists(id))
         {
             return NotFound("Patient not found");
         }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
+            p => p.PatientId == id
+        );
 
         patientDetails.Notes = updatePatientNotesDto.Notes;
 
@@ -401,15 +344,15 @@ public class PatientsController : BaseApiController
     [HttpPut("updateAppointment/{id}")]
     public async Task<ActionResult> UpdateAppointment(
         int id,
-        AddUpdateAppointmentDto appointmentDto
+        CreateUpdateAppointmentDto appointmentDto
     )
     {
-        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
-
-        if (appointment == null)
+        if (!await AppointmentExists(id))
         {
             return NotFound("Appointment not found");
         }
+
+        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
 
         appointment.StaffId = appointmentDto.StaffId;
         appointment.DateTime = appointmentDto.DateTime;
@@ -425,7 +368,7 @@ public class PatientsController : BaseApiController
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await _context.Appointments.AnyAsync(a => a.Id == id))
+            if (!await AppointmentExists(id))
             {
                 return NotFound(
                     "Appointment no longer exists, if this is unexpected please contact your administrator"
@@ -450,18 +393,18 @@ public class PatientsController : BaseApiController
         CreateUpdatePrescriptionDto prescriptionDto
     )
     {
-        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
-
-        if (prescription == null)
+        if (!await PrescriptionExists(id))
         {
             return NotFound("Prescription not found");
         }
+
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
 
         prescription.ScriptName = prescriptionDto.ScriptName;
         prescription.ScriptStartDate = prescriptionDto.ScriptStartDate;
         prescription.ScriptDose = prescriptionDto.ScriptDose;
         prescription.ScriptInterval = prescriptionDto.ScriptInterval;
-        prescription.ScriptNotes = prescriptionDto.ScriptNotes;
+        prescription.Notes = prescriptionDto.Notes;
         prescription.ScriptRepeat = prescriptionDto.ScriptRepeat;
         prescription.PrescribingStaffId = prescriptionDto.PrescribingStaffId;
 
@@ -473,7 +416,7 @@ public class PatientsController : BaseApiController
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await _context.Prescriptions.AnyAsync(pr => pr.Id == id))
+            if (!await PrescriptionExists(id))
             {
                 return NotFound(
                     "Prescription no longer exists, if this is unexpected please contact your administrator"
@@ -492,19 +435,15 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPut("cancelPrescription/{id}")]
-    public async Task<ActionResult> CancelPrescription(
-        int id
-    )
+    [HttpPatch("cancelPrescription/{id}")]
+    public async Task<ActionResult> CancelPrescription(int id)
     {
-        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(
-            pr => pr.Id == id
-        );
-
-        if (prescription == null)
+        if (!await PrescriptionExists(id))
         {
             return NotFound("Prescription not found");
         }
+
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
 
         prescription.Cancelled = true;
 
@@ -516,10 +455,10 @@ public class PatientsController : BaseApiController
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await PatientDetailsExists(id))
+            if (!await PrescriptionExists(id))
             {
                 return NotFound(
-                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                    "Prescription no longer exists, if this is unexpected please contact your administrator"
                 );
             }
             else
@@ -538,12 +477,12 @@ public class PatientsController : BaseApiController
     [HttpDelete("deleteAppointment/{id}")]
     public async Task<ActionResult> DeleteAppointment(int id)
     {
-        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
-
-        if (appointment == null)
+        if (!await AppointmentExists(id))
         {
             return NotFound("Appointment not found");
         }
+
+        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
 
         _context.Appointments.Remove(appointment);
         await _context.SaveChangesAsync();
@@ -554,17 +493,22 @@ public class PatientsController : BaseApiController
     [HttpDelete("deletePrescription/{id}")]
     public async Task<ActionResult> DeletePrescription(int id)
     {
-        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
-
-        if (prescription == null)
+        if (!await PrescriptionExists(id))
         {
             return NotFound("Prescription not found");
         }
+
+        var prescription = await _context.Prescriptions.FirstOrDefaultAsync(pr => pr.Id == id);
 
         _context.Prescriptions.Remove(prescription);
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    private async Task<bool> AppointmentExists(int id)
+    {
+        return await _context.Appointments.AnyAsync(a => a.Id == id);
     }
 
     private async Task<bool> PatientDetailsExists(int id)
@@ -575,5 +519,10 @@ public class PatientsController : BaseApiController
     private async Task<bool> PatientExists(int id)
     {
         return await _context.Users.AnyAsync(u => u.Id == id && u.Role == 1);
+    }
+
+    private async Task<bool> PrescriptionExists(int id)
+    {
+        return await _context.Prescriptions.AnyAsync(pr => pr.Id == id);
     }
 }
