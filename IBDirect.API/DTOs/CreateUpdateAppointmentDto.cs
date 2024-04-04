@@ -1,6 +1,6 @@
 namespace IBDirect.API.DTOs
 {
-    public class AddUpdateAppointmentDto
+    public class CreateUpdateAppointmentDto
     {
         public int StaffId { get; set; }
         public DateTime DateTime { get; set; }

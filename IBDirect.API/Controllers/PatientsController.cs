@@ -18,7 +18,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPost("{id}/addAppointment")]
-    public async Task<ActionResult> AddAppointment(int id, AddUpdateAppointmentDto appointmentDto)
+    public async Task<ActionResult> AddAppointment(int id, CreateUpdateAppointmentDto appointmentDto)
     {
         if (!await PatientExists(id))
         {
@@ -344,7 +344,7 @@ public class PatientsController : BaseApiController
     [HttpPut("updateAppointment/{id}")]
     public async Task<ActionResult> UpdateAppointment(
         int id,
-        AddUpdateAppointmentDto appointmentDto
+        CreateUpdateAppointmentDto appointmentDto
     )
     {
         if (!await AppointmentExists(id))
