@@ -129,6 +129,13 @@ public class StaffController : BaseApiController
         return Ok(appointments);
     }
 
+    private async Task<bool> StaffMemberExists(int id)
+    {
+        return await _context.Users.AnyAsync(
+            u => u.Id == id && validStaffRoleValues.Contains(u.Role)
+        );
+    }
+
     private async Task<bool> StaffDetailsExists(int id)
     {
         return await _context.StaffDetails.AnyAsync(u => u.StaffId == id);
