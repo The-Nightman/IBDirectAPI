@@ -18,7 +18,10 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPost("{id}/addAppointment")]
-    public async Task<ActionResult> AddAppointment(int id, CreateUpdateAppointmentDto appointmentDto)
+    public async Task<ActionResult> AddAppointment(
+        int id,
+        CreateUpdateAppointmentDto appointmentDto
+    )
     {
         if (!await PatientExists(id))
         {
@@ -285,7 +288,7 @@ public class PatientsController : BaseApiController
                             new SurveyDto
                             {
                                 Id = s.Id,
-                                DateTime = s.DateTime,
+                                Date = s.Date,
                                 Q1 = s.Q1,
                                 Q2 = s.Q2,
                                 Q3 = s.Q3,
@@ -307,7 +310,8 @@ public class PatientsController : BaseApiController
                                 Q17 = s.Q17,
                                 Q17a = s.Q17a,
                                 Q18 = s.Q18,
-                                Q19 = s.Q19
+                                Q19 = s.Q19,
+                                Completed = s.Completed
                             }
                     )
                     .ToList(),
