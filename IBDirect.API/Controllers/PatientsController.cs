@@ -125,6 +125,56 @@ public class PatientsController : BaseApiController
         return Ok(prescription.Id);
     }
 
+    [HttpPost("{id}/addSurvey")]
+    public async Task<ActionResult> AddSurvey(int id, CreateSurveyDto surveyDto)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        Survey survey;
+
+        try
+        {
+            survey = new Survey
+            {
+                Date = surveyDto.Date,
+                PatientDetailsId = id,
+                Q16a = "",
+                Q17a = "",
+                Completed = false,
+            };
+
+            _context.Surveys.Add(survey);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while adding appointments.");
+                return StatusCode(
+                    500,
+                    "An error occurred while adding the survey, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return Ok(survey.Id);
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Users>>> GetPatients()
     {
