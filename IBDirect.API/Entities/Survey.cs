@@ -27,6 +27,7 @@ public class Survey
     public int? Q16 { get; set; }
     public string Q16a { get; set; }
     public int? Q17 { get; set; }
+    public string Q17a { get; set; }
     public int? Q18 { get; set; }
     public int? Q19 { get; set; }
 
