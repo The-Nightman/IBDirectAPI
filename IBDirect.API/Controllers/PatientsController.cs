@@ -234,6 +234,7 @@ public class PatientsController : BaseApiController
                         s =>
                             new SurveyDto
                             {
+                                Id = s.Id,
                                 DateTime = s.DateTime,
                                 Q1 = s.Q1,
                                 Q2 = s.Q2,
@@ -254,6 +255,7 @@ public class PatientsController : BaseApiController
                                 Q16 = s.Q16,
                                 Q16a = s.Q16a,
                                 Q17 = s.Q17,
+                                Q17a = s.Q17a,
                                 Q18 = s.Q18,
                                 Q19 = s.Q19
                             }
