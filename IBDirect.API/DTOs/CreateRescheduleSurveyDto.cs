@@ -1,6 +1,6 @@
 namespace IBDirect.API.DTOs
 {
-    public class CreateSurveyDto
+    public class CreateRescheduleSurveyDto
     {
         public DateOnly Date { get; set; }
     }
