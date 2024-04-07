@@ -3,6 +3,7 @@ using System;
 using IBDirect.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IBDirect.API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240405170905_SurveyRefactorAndCompleteFlag")]
+    partial class SurveyRefactorAndCompleteFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,6 +205,30 @@ namespace IBDirect.API.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int?>("Q13")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Q14")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Q15")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Q16")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Q16a")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Q17")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Q17a")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Q18")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Q19")
                         .HasColumnType("integer");
 
                     b.Property<int?>("Q2")

@@ -2,7 +2,8 @@ namespace IBDirect.API.DTOs
 {
     public class SurveyDto
     {
-        public DateTime DateTime { get; set; }
+        public int Id { get; set; }
+        public DateOnly Date { get; set; }
         public int? Q1 { get; set; }
         public int? Q2 { get; set; }
         public int? Q3 { get; set; }
@@ -18,12 +19,6 @@ namespace IBDirect.API.DTOs
         public int? Q12 { get; set; }
         public int? ContScore { get; set; }
         public int? Q13 { get; set; }
-        public int? Q14 { get; set; }
-        public int? Q15 { get; set; }
-        public int? Q16 { get; set; }
-        public string Q16a { get; set; }
-        public int? Q17 { get; set; }
-        public int? Q18 { get; set; }
-        public int? Q19 { get; set; }
+        public bool Completed { get; set; }
     }
 }
