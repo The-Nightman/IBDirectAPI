@@ -149,8 +149,6 @@ public class PatientsController : BaseApiController
             {
                 Date = surveyDto.Date,
                 PatientDetailsId = id,
-                Q16a = "",
-                Q17a = "",
                 Completed = false,
             };
 
@@ -303,14 +301,6 @@ public class PatientsController : BaseApiController
                                 Q12 = s.Q12,
                                 ContScore = s.ContScore,
                                 Q13 = s.Q13,
-                                Q14 = s.Q14,
-                                Q15 = s.Q15,
-                                Q16 = s.Q16,
-                                Q16a = s.Q16a,
-                                Q17 = s.Q17,
-                                Q17a = s.Q17a,
-                                Q18 = s.Q18,
-                                Q19 = s.Q19,
                                 Completed = s.Completed
                             }
                     )
