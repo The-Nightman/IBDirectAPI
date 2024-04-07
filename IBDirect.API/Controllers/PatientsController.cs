@@ -581,4 +581,9 @@ public class PatientsController : BaseApiController
     {
         return await _context.Prescriptions.AnyAsync(pr => pr.Id == id);
     }
+
+    private async Task<bool> SurveyExists(int id)
+    {
+        return await _context.Surveys.AnyAsync(sur => sur.Id == id);
+    }
 }
