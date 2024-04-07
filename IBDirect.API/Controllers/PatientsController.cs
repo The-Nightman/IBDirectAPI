@@ -481,6 +481,60 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
+    [HttpPut("updateSurvey/{id}")]
+    public async Task<ActionResult> UpdateSurvey(int id, SurveyDto surveyDto)
+    {
+        if (!await SurveyExists(id))
+        {
+            return NotFound("Survey not found");
+        }
+
+        var survey = await _context.Surveys.FirstOrDefaultAsync(sur => sur.Id == id);
+
+        survey.Date = surveyDto.Date;
+        survey.Q1 = surveyDto.Q1;
+        survey.Q2 = surveyDto.Q2;
+        survey.Q3 = surveyDto.Q3;
+        survey.Q4 = surveyDto.Q4;
+        survey.Q5 = surveyDto.Q5;
+        survey.Q6 = surveyDto.Q6;
+        survey.Q7 = surveyDto.Q7;
+        survey.Q8 = surveyDto.Q8;
+        survey.Q9 = surveyDto.Q9;
+        survey.Q10 = surveyDto.Q10;
+        survey.Q11 = surveyDto.Q11;
+        survey.Q12 = surveyDto.Q12;
+        survey.ContScore = surveyDto.ContScore;
+        survey.Q13 = surveyDto.Q13;
+        survey.Completed = surveyDto.Completed;
+
+        _context.Entry(survey).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await SurveyExists(id))
+            {
+                return NotFound(
+                    "Survey no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the Survey, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
     [HttpPatch("cancelPrescription/{id}")]
     public async Task<ActionResult> CancelPrescription(int id)
     {
