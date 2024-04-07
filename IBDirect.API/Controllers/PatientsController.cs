@@ -645,6 +645,22 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
+    [HttpDelete("deleteSurvey/{id}")]
+    public async Task<ActionResult> DeleteSurvey(int id)
+    {
+        if (!await SurveyExists(id))
+        {
+            return NotFound("Survey not found");
+        }
+
+        var survey = await _context.Surveys.FirstOrDefaultAsync(sur => sur.Id == id);
+
+        _context.Surveys.Remove(survey);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     private async Task<bool> AppointmentExists(int id)
     {
         return await _context.Appointments.AnyAsync(a => a.Id == id);
