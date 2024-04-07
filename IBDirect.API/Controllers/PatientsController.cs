@@ -129,7 +129,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPost("{id}/addSurvey")]
-    public async Task<ActionResult> AddSurvey(int id, CreateSurveyDto surveyDto)
+    public async Task<ActionResult> AddSurvey(int id, CreateRescheduleSurveyDto surveyDto)
     {
         if (!await PatientExists(id))
         {
@@ -567,6 +567,45 @@ public class PatientsController : BaseApiController
                 return StatusCode(
                     500,
                     "An error occurred while updating the prescription, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
+    [HttpPatch("rescheduleSurvey/{id}")]
+    public async Task<ActionResult> RescheduleSurvey(int id, CreateRescheduleSurveyDto surveyDto)
+    {
+        if (!await SurveyExists(id))
+        {
+            return NotFound("Survey not found");
+        }
+
+        var survey = await _context.Surveys.FirstOrDefaultAsync(sur => sur.Id == id);
+
+        survey.Date = surveyDto.Date;
+
+        _context.Entry(survey).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await SurveyExists(id))
+            {
+                return NotFound(
+                    "Survey no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the Survey, please try again later or contact an administrator"
                 );
             }
         }
