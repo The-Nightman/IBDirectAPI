@@ -338,6 +338,33 @@ public class PatientsController : BaseApiController
         return Ok(patientDetails);
     }
 
+    [HttpGet("{id}/myDetailsBrief")]
+    public async Task<ActionResult<PatientMyDetailsBriefDto>> GetMyDetailsBrief(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var patientDetails = await (
+            from p in _context.PatientDetails
+            where p.PatientId == id
+            select new PatientMyDetailsBriefDto
+            {
+                Name = p.Name,
+                Diagnosis = p.Diagnosis,
+                Hospital = p.Hospital,
+            }
+        ).FirstOrDefaultAsync();
+
+        return Ok(patientDetails);
+    }
+
     [HttpPut("{id}/updateNotes")]
     public async Task<ActionResult> UpdatePatientNotes(
         int id,
