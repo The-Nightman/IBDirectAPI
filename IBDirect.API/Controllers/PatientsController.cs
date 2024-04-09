@@ -365,6 +365,75 @@ public class PatientsController : BaseApiController
         return Ok(patientDetails);
     }
 
+    [HttpGet("{id}/myUpcoming")]
+    public async Task<ActionResult<PatientUpcomingDto>> GetMyUpcoming(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var upcomingAppointments = await _context.Appointments
+            .Where(a => a.PatientDetailsId == id && a.DateTime >= DateTime.UtcNow.AddMinutes(-5))
+            .Join(
+                _context.StaffDetails,
+                a => a.StaffId,
+                s => s.StaffId,
+                (a, s) =>
+                    new AppointmentDto
+                    {
+                        Id = a.Id,
+                        StaffId = a.StaffId,
+                        StaffName = s.Name,
+                        DateTime = a.DateTime,
+                        Location = a.Location,
+                        AppType = a.AppType,
+                        Notes = a.Notes
+                    }
+            )
+            .ToListAsync();
+
+        var upcomingSurveys = await _context.Surveys
+            .Where(s => s.PatientDetailsId == id && s.Completed == false)
+            .Select(
+                s =>
+                    new SurveyDto
+                    {
+                        Id = s.Id,
+                        Date = s.Date,
+                        Q1 = s.Q1,
+                        Q2 = s.Q2,
+                        Q3 = s.Q3,
+                        Q4 = s.Q4,
+                        Q5 = s.Q5,
+                        Q6 = s.Q6,
+                        Q7 = s.Q7,
+                        Q8 = s.Q8,
+                        Q9 = s.Q9,
+                        Q10 = s.Q10,
+                        Q11 = s.Q11,
+                        Q12 = s.Q12,
+                        ContScore = s.ContScore,
+                        Q13 = s.Q13,
+                        Completed = s.Completed
+                    }
+            )
+            .ToListAsync();
+
+        var patientUpcoming = new PatientUpcomingDto
+        {
+            Appointments = upcomingAppointments,
+            Surveys = upcomingSurveys
+        };
+
+        return Ok(patientUpcoming);
+    }
+
     [HttpPut("{id}/updateNotes")]
     public async Task<ActionResult> UpdatePatientNotes(
         int id,
