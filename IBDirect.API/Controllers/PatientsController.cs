@@ -509,6 +509,42 @@ public class PatientsController : BaseApiController
         return Ok(patientDetails);
     }
 
+    [HttpGet("{id}/myAppointments")]
+    public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetMyAppointments(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var appoinments = await _context.Appointments
+            .Where(a => a.PatientDetailsId == id)
+            .Join(
+                _context.StaffDetails,
+                a => a.StaffId,
+                s => s.StaffId,
+                (a, s) =>
+                    new AppointmentDto
+                    {
+                        Id = a.Id,
+                        StaffId = a.StaffId,
+                        StaffName = s.Name,
+                        DateTime = a.DateTime,
+                        Location = a.Location,
+                        AppType = a.AppType,
+                        Notes = a.Notes
+                    }
+            )
+            .ToListAsync();
+
+        return Ok(appoinments);
+    }
+
     [HttpPut("{id}/updateNotes")]
     public async Task<ActionResult> UpdatePatientNotes(
         int id,
