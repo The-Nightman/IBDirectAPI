@@ -291,6 +291,7 @@ public class PatientsController : BaseApiController
                                 Q2 = s.Q2,
                                 Q3 = s.Q3,
                                 Q4 = s.Q4,
+                                Q4a = s.Q4a ?? false,
                                 Q5 = s.Q5,
                                 Q6 = s.Q6,
                                 Q7 = s.Q7,
@@ -410,6 +411,7 @@ public class PatientsController : BaseApiController
                         Q2 = s.Q2,
                         Q3 = s.Q3,
                         Q4 = s.Q4,
+                        Q4a = s.Q4a ?? false,
                         Q5 = s.Q5,
                         Q6 = s.Q6,
                         Q7 = s.Q7,
@@ -592,6 +594,7 @@ public class PatientsController : BaseApiController
         survey.Q2 = surveyDto.Q2;
         survey.Q3 = surveyDto.Q3;
         survey.Q4 = surveyDto.Q4;
+        survey.Q4a = surveyDto.Q4a;
         survey.Q5 = surveyDto.Q5;
         survey.Q6 = surveyDto.Q6;
         survey.Q7 = surveyDto.Q7;
