@@ -47,6 +47,11 @@ public class StaffController : BaseApiController
         int staffId
     )
     {
+        if (!await StaffMemberExists(staffId))
+        {
+            return NotFound("Staff member not found");
+        }
+
         var filters = new Dictionary<int, Expression<Func<PatientDetails, bool>>>
         {
             { 2, u => u.NurseId == staffId },
@@ -86,6 +91,11 @@ public class StaffController : BaseApiController
     [HttpGet("{id}/details")]
     public async Task<ActionResult<StaffDetailsDto>> GetStaffDetails(int id)
     {
+        if (!await StaffMemberExists(id))
+        {
+            return NotFound("Staff member not found");
+        }
+
         if (!await StaffDetailsExists(id))
         {
             return NotFound("Staff member details not found, please contact an administrator");
@@ -99,6 +109,11 @@ public class StaffController : BaseApiController
     [HttpGet("{id}/myAppointments")]
     public async Task<ActionResult<IEnumerable<StaffAppointmentDto>>> GetMyAppointments(int id)
     {
+        if (!await StaffMemberExists(id))
+        {
+            return NotFound("Staff member not found");
+        }
+
         if (!await StaffDetailsExists(id))
         {
             return NotFound("Staff member details not found, please contact an administrator");
