@@ -184,6 +184,40 @@ public class StaffController : BaseApiController
         return Ok(dashboardHub);
     }
 
+    [HttpGet("{id}/myColleagues")]
+    public async Task<ActionResult<IEnumerable<StaffDetailsDto>>> GetMyColleagues(int id)
+    {
+        if (!await StaffMemberExists(id))
+        {
+            return NotFound("Staff member not found");
+        }
+
+        if (!await StaffDetailsExists(id))
+        {
+            return NotFound("Staff member details not found, please contact an administrator");
+        }
+
+        var staffPractice = await _context.StaffDetails
+            .Where(u => u.StaffId == id)
+            .Select(u => u.Practice)
+            .FirstOrDefaultAsync();
+
+        var colleagues = await (
+            from s in _context.StaffDetails
+            where s.StaffId != id && s.Practice == staffPractice
+            select new StaffDetailsDto
+            {
+                StaffId = s.StaffId,
+                Name = s.Name,
+                Role = s.Role,
+                Speciality = s.Speciality,
+                Practice = s.Practice,
+            }
+        ).ToListAsync();
+
+        return Ok(colleagues);
+    }
+
     private async Task<bool> StaffMemberExists(int id)
     {
         return await _context.Users.AnyAsync(
