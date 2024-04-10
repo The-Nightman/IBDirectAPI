@@ -291,6 +291,7 @@ public class PatientsController : BaseApiController
                                 Q2 = s.Q2,
                                 Q3 = s.Q3,
                                 Q4 = s.Q4,
+                                Q4a = s.Q4a ?? false,
                                 Q5 = s.Q5,
                                 Q6 = s.Q6,
                                 Q7 = s.Q7,
@@ -336,6 +337,301 @@ public class PatientsController : BaseApiController
         ).FirstOrDefaultAsync();
 
         return Ok(patientDetails);
+    }
+
+    [HttpGet("{id}/myDetailsBrief")]
+    public async Task<ActionResult<PatientMyDetailsBriefDto>> GetMyDetailsBrief(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var patientDetails = await (
+            from p in _context.PatientDetails
+            where p.PatientId == id
+            select new PatientMyDetailsBriefDto
+            {
+                Name = p.Name,
+                Diagnosis = p.Diagnosis,
+                Hospital = p.Hospital,
+            }
+        ).FirstOrDefaultAsync();
+
+        return Ok(patientDetails);
+    }
+
+    [HttpGet("{id}/myUpcoming")]
+    public async Task<ActionResult<PatientUpcomingDto>> GetMyUpcoming(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var upcomingAppointments = await _context.Appointments
+            .Where(a => a.PatientDetailsId == id && a.DateTime >= DateTime.UtcNow.AddMinutes(-5))
+            .Join(
+                _context.StaffDetails,
+                a => a.StaffId,
+                s => s.StaffId,
+                (a, s) =>
+                    new AppointmentDto
+                    {
+                        Id = a.Id,
+                        StaffId = a.StaffId,
+                        StaffName = s.Name,
+                        DateTime = a.DateTime,
+                        Location = a.Location,
+                        AppType = a.AppType,
+                        Notes = a.Notes
+                    }
+            )
+            .ToListAsync();
+
+        var upcomingSurveys = await _context.Surveys
+            .Where(s => s.PatientDetailsId == id && s.Completed == false)
+            .Select(
+                s =>
+                    new SurveyDto
+                    {
+                        Id = s.Id,
+                        Date = s.Date,
+                        Q1 = s.Q1,
+                        Q2 = s.Q2,
+                        Q3 = s.Q3,
+                        Q4 = s.Q4,
+                        Q4a = s.Q4a ?? false,
+                        Q5 = s.Q5,
+                        Q6 = s.Q6,
+                        Q7 = s.Q7,
+                        Q8 = s.Q8,
+                        Q9 = s.Q9,
+                        Q10 = s.Q10,
+                        Q11 = s.Q11,
+                        Q12 = s.Q12,
+                        ContScore = s.ContScore,
+                        Q13 = s.Q13,
+                        Completed = s.Completed
+                    }
+            )
+            .ToListAsync();
+
+        var patientUpcoming = new PatientUpcomingDto
+        {
+            Appointments = upcomingAppointments,
+            Surveys = upcomingSurveys
+        };
+
+        return Ok(patientUpcoming);
+    }
+
+    [HttpGet("{id}/myDetails")]
+    public async Task<ActionResult<PatientMyDetailsDto>> GetMyDetails(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var patientDetails = await (
+            from p in _context.PatientDetails
+            join c in _context.StaffDetails on p.ConsultantId equals c.StaffId
+            join n in _context.StaffDetails on p.NurseId equals n.StaffId
+            from s in _context.StaffDetails.Where(s => p.StomaNurseId == s.StaffId).DefaultIfEmpty()
+            join g in _context.StaffDetails on p.GenpractId equals g.StaffId
+            where p.PatientId == id
+            select new PatientDetailsStaffVDto
+            {
+                PatientId = p.PatientId,
+                Name = p.Name,
+                Sex = p.Sex,
+                Hospital = p.Hospital,
+                Diagnosis = p.Diagnosis,
+                DiagnosisDate = p.DiagnosisDate,
+                Stoma = p.Stoma,
+                Notes = p.Notes,
+                Consultant = new StaffDetailsDto
+                {
+                    StaffId = c.StaffId,
+                    Name = c.Name,
+                    Role = c.Role,
+                    Speciality = c.Speciality,
+                    Practice = c.Practice
+                },
+                Nurse = new StaffDetailsDto
+                {
+                    StaffId = n.StaffId,
+                    Name = n.Name,
+                    Role = n.Role,
+                    Speciality = n.Speciality,
+                    Practice = n.Practice
+                },
+                StomaNurse =
+                    s != null
+                        ? new StaffDetailsDto
+                        {
+                            StaffId = s.StaffId,
+                            Name = s.Name,
+                            Role = s.Role,
+                            Speciality = s.Speciality,
+                            Practice = s.Practice
+                        }
+                        : null,
+                Genpract = new StaffDetailsDto
+                {
+                    StaffId = g.StaffId,
+                    Name = g.Name,
+                    Role = g.Role,
+                    Speciality = g.Speciality,
+                    Practice = g.Practice
+                },
+                DateOfBirth = p.DateOfBirth,
+                Address = p.Address,
+            }
+        ).FirstOrDefaultAsync();
+
+        return Ok(patientDetails);
+    }
+
+    [HttpGet("{id}/myAppointments")]
+    public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetMyAppointments(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var appoinments = await _context.Appointments
+            .Where(a => a.PatientDetailsId == id)
+            .Join(
+                _context.StaffDetails,
+                a => a.StaffId,
+                s => s.StaffId,
+                (a, s) =>
+                    new AppointmentDto
+                    {
+                        Id = a.Id,
+                        StaffId = a.StaffId,
+                        StaffName = s.Name,
+                        DateTime = a.DateTime,
+                        Location = a.Location,
+                        AppType = a.AppType,
+                        Notes = a.Notes
+                    }
+            )
+            .ToListAsync();
+
+        return Ok(appoinments);
+    }
+
+    [HttpGet("{id}/myPrescriptions")]
+    public async Task<ActionResult<IEnumerable<PrescriptionDto>>> GetMyPrescriptions(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var prescriptions = await _context.Prescriptions
+            .Where(pr => pr.PatientDetailsId == id)
+            .Join(
+                _context.StaffDetails,
+                pr => pr.PrescribingStaffId,
+                s => s.StaffId,
+                (pr, s) =>
+                    new PrescriptionDto
+                    {
+                        Id = pr.Id,
+                        ScriptName = pr.ScriptName,
+                        ScriptStartDate = pr.ScriptStartDate,
+                        ScriptDose = pr.ScriptDose,
+                        ScriptInterval = pr.ScriptInterval,
+                        Notes = pr.Notes,
+                        ScriptRepeat = pr.ScriptRepeat,
+                        PrescribingStaff = new StaffDetailsDto
+                        {
+                            StaffId = s.StaffId,
+                            Name = s.Name,
+                            Role = s.Role,
+                            Speciality = s.Speciality,
+                            Practice = s.Practice,
+                        },
+                        Cancelled = pr.Cancelled,
+                    }
+            )
+            .ToListAsync();
+
+        return Ok(prescriptions);
+    }
+
+    [HttpGet("{id}/mySurveys")]
+    public async Task<ActionResult<IEnumerable<SurveyDto>>> GetMySurveys(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var surveys = await _context.Surveys
+            .Where(s => s.PatientDetailsId == id)
+            .Select(
+                s =>
+                    new SurveyDto
+                    {
+                        Id = s.Id,
+                        Date = s.Date,
+                        Q1 = s.Q1,
+                        Q2 = s.Q2,
+                        Q3 = s.Q3,
+                        Q4 = s.Q4,
+                        Q4a = s.Q4a ?? false,
+                        Q5 = s.Q5,
+                        Q6 = s.Q6,
+                        Q7 = s.Q7,
+                        Q8 = s.Q8,
+                        Q9 = s.Q9,
+                        Q10 = s.Q10,
+                        Q11 = s.Q11,
+                        Q12 = s.Q12,
+                        ContScore = s.ContScore,
+                        Q13 = s.Q13,
+                        Completed = s.Completed
+                    }
+            )
+            .ToListAsync();
+
+        return Ok(surveys);
     }
 
     [HttpPut("{id}/updateNotes")]
@@ -496,6 +792,7 @@ public class PatientsController : BaseApiController
         survey.Q2 = surveyDto.Q2;
         survey.Q3 = surveyDto.Q3;
         survey.Q4 = surveyDto.Q4;
+        survey.Q4a = surveyDto.Q4a;
         survey.Q5 = surveyDto.Q5;
         survey.Q6 = surveyDto.Q6;
         survey.Q7 = surveyDto.Q7;
