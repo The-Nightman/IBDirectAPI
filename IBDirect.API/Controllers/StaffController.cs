@@ -144,6 +144,46 @@ public class StaffController : BaseApiController
         return Ok(appointments);
     }
 
+    [HttpGet("{id}/myDashboardHub")]
+    public async Task<ActionResult<StaffDashboardHubDto>> GetMyDashboardHub(int id)
+    {
+        if (!await StaffMemberExists(id))
+        {
+            return NotFound("Staff member not found");
+        }
+
+        if (!await StaffDetailsExists(id))
+        {
+            return NotFound("Staff member details not found, please contact an administrator");
+        }
+
+        var currentDate = DateTime.UtcNow.Date;
+        var startOfWeek = currentDate.AddDays(-(int)currentDate.DayOfWeek + 1);
+        var endOfWeek = startOfWeek.AddDays(6);
+
+        var dashboardHub = new StaffDashboardHubDto
+        {
+            ThisWeekAppointments = await (
+                from a in _context.Appointments
+                join p in _context.PatientDetails on a.PatientDetailsId equals p.PatientId
+                where a.StaffId == id && a.DateTime >= currentDate && a.DateTime <= endOfWeek
+                select new StaffAppointmentDto
+                {
+                    Id = a.Id,
+                    StaffId = a.StaffId,
+                    PatientId = p.PatientId,
+                    PatientName = p.Name,
+                    DateTime = a.DateTime,
+                    Location = a.Location,
+                    AppType = a.AppType,
+                    Notes = a.Notes
+                }
+            ).ToListAsync()
+        };
+
+        return Ok(dashboardHub);
+    }
+
     private async Task<bool> StaffMemberExists(int id)
     {
         return await _context.Users.AnyAsync(
