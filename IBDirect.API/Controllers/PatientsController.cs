@@ -590,6 +590,50 @@ public class PatientsController : BaseApiController
         return Ok(prescriptions);
     }
 
+    [HttpGet("{id}/mySurveys")]
+    public async Task<ActionResult<IEnumerable<SurveyDto>>> GetMySurveys(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var surveys = await _context.Surveys
+            .Where(s => s.PatientDetailsId == id)
+            .Select(
+                s =>
+                    new SurveyDto
+                    {
+                        Id = s.Id,
+                        Date = s.Date,
+                        Q1 = s.Q1,
+                        Q2 = s.Q2,
+                        Q3 = s.Q3,
+                        Q4 = s.Q4,
+                        Q4a = s.Q4a ?? false,
+                        Q5 = s.Q5,
+                        Q6 = s.Q6,
+                        Q7 = s.Q7,
+                        Q8 = s.Q8,
+                        Q9 = s.Q9,
+                        Q10 = s.Q10,
+                        Q11 = s.Q11,
+                        Q12 = s.Q12,
+                        ContScore = s.ContScore,
+                        Q13 = s.Q13,
+                        Completed = s.Completed
+                    }
+            )
+            .ToListAsync();
+
+        return Ok(surveys);
+    }
+
     [HttpPut("{id}/updateNotes")]
     public async Task<ActionResult> UpdatePatientNotes(
         int id,
