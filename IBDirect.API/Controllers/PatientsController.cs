@@ -195,6 +195,29 @@ public class PatientsController : BaseApiController
         return Ok(patient);
     }
 
+    [HttpGet("findPatient/{searchName}")]
+    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetPatientsByName(
+        string searchName
+    )
+    {
+        var patients = await _context.PatientDetails
+            .Where(p => p.Name.ToLower().Contains(searchName.ToLower()))
+            .Select(
+                p =>
+                    new PatientDetailsBriefDto
+                    {
+                        PatientId = p.PatientId,
+                        Name = p.Name,
+                        DateOfBirth = p.DateOfBirth,
+                        Diagnosis = p.Diagnosis,
+                        Stoma = p.Stoma
+                    }
+            )
+            .ToListAsync();
+
+        return Ok(patients);
+    }
+
     [HttpGet("{id}/details")]
     public async Task<ActionResult<PatientDetailsStaffVDto>> GetPatientDetails(int id)
     {
