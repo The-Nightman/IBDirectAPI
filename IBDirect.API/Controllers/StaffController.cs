@@ -218,6 +218,27 @@ public class StaffController : BaseApiController
         return Ok(colleagues);
     }
 
+    [HttpGet("findStaff/{searchName}")]
+    public async Task<ActionResult<IEnumerable<StaffDetailsDto>>> GetStaffByName(string searchName)
+    {
+        var staffMembers = await _context.StaffDetails
+            .Where(u => u.Name.ToLower().Contains(searchName.ToLower()))
+            .Select(
+                u =>
+                    new StaffDetailsDto
+                    {
+                        StaffId = u.StaffId,
+                        Name = u.Name,
+                        Role = u.Role,
+                        Speciality = u.Speciality,
+                        Practice = u.Practice
+                    }
+            )
+            .ToListAsync();
+
+        return Ok(staffMembers);
+    }
+
     private async Task<bool> StaffMemberExists(int id)
     {
         return await _context.Users.AnyAsync(
