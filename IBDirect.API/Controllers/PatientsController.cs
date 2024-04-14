@@ -195,6 +195,29 @@ public class PatientsController : BaseApiController
         return Ok(patient);
     }
 
+    [HttpGet("findPatient/{searchName}")]
+    public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetPatientsByName(
+        string searchName
+    )
+    {
+        var patients = await _context.PatientDetails
+            .Where(p => p.Name.ToLower().Contains(searchName.ToLower()))
+            .Select(
+                p =>
+                    new PatientDetailsBriefDto
+                    {
+                        PatientId = p.PatientId,
+                        Name = p.Name,
+                        DateOfBirth = p.DateOfBirth,
+                        Diagnosis = p.Diagnosis,
+                        Stoma = p.Stoma
+                    }
+            )
+            .ToListAsync();
+
+        return Ok(patients);
+    }
+
     [HttpGet("{id}/details")]
     public async Task<ActionResult<PatientDetailsStaffVDto>> GetPatientDetails(int id)
     {
@@ -634,55 +657,6 @@ public class PatientsController : BaseApiController
         return Ok(surveys);
     }
 
-    [HttpPut("{id}/updateNotes")]
-    public async Task<ActionResult> UpdatePatientNotes(
-        int id,
-        UpdatePatientNotesDto updatePatientNotesDto
-    )
-    {
-        if (!await PatientExists(id))
-        {
-            return NotFound("Patient not found");
-        }
-
-        if (!await PatientDetailsExists(id))
-        {
-            return NotFound("Patient details not found, please contact your administrator");
-        }
-
-        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
-            p => p.PatientId == id
-        );
-
-        patientDetails.Notes = updatePatientNotesDto.Notes;
-
-        _context.Entry(patientDetails).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await PatientDetailsExists(id))
-            {
-                return NotFound(
-                    "Patient details no longer exists, if this is unexpected please contact your administrator"
-                );
-            }
-            else
-            {
-                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
-                return StatusCode(
-                    500,
-                    "An error occurred while updating the patient details, please try again later or contact an administrator"
-                );
-            }
-        }
-
-        return NoContent();
-    }
-
     [HttpPut("updateAppointment/{id}")]
     public async Task<ActionResult> UpdateAppointment(
         int id,
@@ -832,6 +806,55 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
+    [HttpPatch("{id}/updateNotes")]
+    public async Task<ActionResult> UpdatePatientNotes(
+        int id,
+        UpdatePatientNotesDto updatePatientNotesDto
+    )
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
+            p => p.PatientId == id
+        );
+
+        patientDetails.Notes = updatePatientNotesDto.Notes;
+
+        _context.Entry(patientDetails).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound(
+                    "Patient details no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the patient details, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
     [HttpPatch("cancelPrescription/{id}")]
     public async Task<ActionResult> CancelPrescription(int id)
     {
@@ -903,6 +926,70 @@ public class PatientsController : BaseApiController
                 return StatusCode(
                     500,
                     "An error occurred while updating the Survey, please try again later or contact an administrator"
+                );
+            }
+        }
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id}/updateDetails")]
+    public async Task<ActionResult> UpdatePatientDetails(
+        int id,
+        UpdatePatientDetailsDto updatePatientDetailsDto
+    )
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        if (
+            updatePatientDetailsDto.DiagnosisDate > DateOnly.FromDateTime(DateTime.UtcNow)
+            || updatePatientDetailsDto.DiagnosisDate.Year < 1900
+        )
+        {
+            return BadRequest("Invalid date, date cannot be in the future or before 1900");
+        }
+
+        var patientDetails = await _context.PatientDetails.FirstOrDefaultAsync(
+            p => p.PatientId == id
+        );
+
+        patientDetails.Name = updatePatientDetailsDto.Name;
+        patientDetails.Address = updatePatientDetailsDto.Address;
+        patientDetails.Diagnosis = updatePatientDetailsDto.Diagnosis;
+        patientDetails.DiagnosisDate = updatePatientDetailsDto.DiagnosisDate;
+        patientDetails.Stoma = updatePatientDetailsDto.Stoma;
+        patientDetails.ConsultantId = updatePatientDetailsDto.ConsultantId;
+        patientDetails.NurseId = updatePatientDetailsDto.NurseId;
+        patientDetails.StomaNurseId = updatePatientDetailsDto.StomaNurseId ?? null;
+
+        _context.Entry(patientDetails).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await PatientDetailsExists(id))
+            {
+                return NotFound(
+                    "Patient Details no longer exists, if this is unexpected please contact your administrator"
+                );
+            }
+            else
+            {
+                // TODO: Log error in a method accessible for debugging while dockerized with identifiable string eg _logger.LogError(ex, "An error occurred while updating patient notes.");
+                return StatusCode(
+                    500,
+                    "An error occurred while updating the Patient Details, please try again later or contact an administrator"
                 );
             }
         }
