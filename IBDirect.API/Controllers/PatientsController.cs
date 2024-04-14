@@ -963,13 +963,12 @@ public class PatientsController : BaseApiController
 
         patientDetails.Name = updatePatientDetailsDto.Name;
         patientDetails.Address = updatePatientDetailsDto.Address;
-        patientDetails.Hospital = updatePatientDetailsDto.Hospital;
         patientDetails.Diagnosis = updatePatientDetailsDto.Diagnosis;
         patientDetails.DiagnosisDate = updatePatientDetailsDto.DiagnosisDate;
         patientDetails.Stoma = updatePatientDetailsDto.Stoma;
         patientDetails.ConsultantId = updatePatientDetailsDto.ConsultantId;
         patientDetails.NurseId = updatePatientDetailsDto.NurseId;
-        patientDetails.StomaNurseId = updatePatientDetailsDto.StomaNurseId;
+        patientDetails.StomaNurseId = updatePatientDetailsDto.StomaNurseId ?? null;
 
         _context.Entry(patientDetails).State = EntityState.Modified;
 
