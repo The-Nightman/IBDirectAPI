@@ -933,7 +933,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPatch("updateDetails/{id}")]
+    [HttpPatch("{id}/updateDetails")]
     public async Task<ActionResult> UpdatePatientDetails(
         int id,
         UpdatePatientDetailsDto updatePatientDetailsDto
