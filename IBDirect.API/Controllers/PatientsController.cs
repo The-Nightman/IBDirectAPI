@@ -657,7 +657,7 @@ public class PatientsController : BaseApiController
         return Ok(surveys);
     }
 
-    [HttpPut("{id}/updateNotes")]
+    [HttpPatch("{id}/updateNotes")]
     public async Task<ActionResult> UpdatePatientNotes(
         int id,
         UpdatePatientNotesDto updatePatientNotesDto
