@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IBDirect.API.Controllers;
 
-[Authorize]
+[Authorize(Roles = "1,2,3,4,5")]
 public class PatientsController : BaseApiController
 {
     private readonly DataContext _context;
@@ -18,6 +18,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPost("{id}/addAppointment")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> AddAppointment(
         int id,
         CreateUpdateAppointmentDto appointmentDto
@@ -72,6 +73,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPost("{id}/addPrescription")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> AddPrescription(
         int id,
         CreateUpdatePrescriptionDto prescriptionDto
@@ -129,6 +131,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPost("{id}/addSurvey")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> AddSurvey(int id, CreateRescheduleSurveyDto surveyDto)
     {
         if (!await PatientExists(id))
@@ -177,12 +180,14 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult<IEnumerable<Users>>> GetPatients()
     {
         return await _context.Users.Where(user => user.Role == 1).ToListAsync();
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult<Users>> GetPatient(int id)
     {
         var patient = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.Role == 1);
@@ -196,6 +201,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("findPatient/{searchName}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetPatientsByName(
         string searchName
     )
@@ -219,6 +225,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/details")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult<PatientDetailsStaffVDto>> GetPatientDetails(int id)
     {
         if (!await PatientExists(id))
@@ -363,6 +370,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/myDetailsBrief")]
+    [Authorize(Roles = "1")]
     public async Task<ActionResult<PatientMyDetailsBriefDto>> GetMyDetailsBrief(int id)
     {
         if (!await PatientExists(id))
@@ -390,6 +398,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/myUpcoming")]
+    [Authorize(Roles = "1")]
     public async Task<ActionResult<PatientUpcomingDto>> GetMyUpcoming(int id)
     {
         if (!await PatientExists(id))
@@ -460,6 +469,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/myDetails")]
+    [Authorize(Roles = "1")]
     public async Task<ActionResult<PatientMyDetailsDto>> GetMyDetails(int id)
     {
         if (!await PatientExists(id))
@@ -533,6 +543,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/myAppointments")]
+    [Authorize(Roles = "1")]
     public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetMyAppointments(int id)
     {
         if (!await PatientExists(id))
@@ -569,6 +580,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/myPrescriptions")]
+    [Authorize(Roles = "1")]
     public async Task<ActionResult<IEnumerable<PrescriptionDto>>> GetMyPrescriptions(int id)
     {
         if (!await PatientExists(id))
@@ -614,6 +626,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpGet("{id}/mySurveys")]
+    [Authorize(Roles = "1")]
     public async Task<ActionResult<IEnumerable<SurveyDto>>> GetMySurveys(int id)
     {
         if (!await PatientExists(id))
@@ -658,6 +671,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPut("updateAppointment/{id}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> UpdateAppointment(
         int id,
         CreateUpdateAppointmentDto appointmentDto
@@ -704,6 +718,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPut("updatePrescription/{id}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> UpdatePrescription(
         int id,
         CreateUpdatePrescriptionDto prescriptionDto
@@ -752,6 +767,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPut("updateSurvey/{id}")]
+    [Authorize(Roles = "1")]
     public async Task<ActionResult> UpdateSurvey(int id, SurveyDto surveyDto)
     {
         if (!await SurveyExists(id))
@@ -807,6 +823,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPatch("{id}/updateNotes")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> UpdatePatientNotes(
         int id,
         UpdatePatientNotesDto updatePatientNotesDto
@@ -856,6 +873,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPatch("cancelPrescription/{id}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> CancelPrescription(int id)
     {
         if (!await PrescriptionExists(id))
@@ -895,6 +913,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPatch("rescheduleSurvey/{id}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> RescheduleSurvey(int id, CreateRescheduleSurveyDto surveyDto)
     {
         if (!await SurveyExists(id))
@@ -934,6 +953,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpPatch("{id}/updateDetails")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> UpdatePatientDetails(
         int id,
         UpdatePatientDetailsDto updatePatientDetailsDto
@@ -998,6 +1018,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpDelete("deleteAppointment/{id}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> DeleteAppointment(int id)
     {
         if (!await AppointmentExists(id))
@@ -1014,6 +1035,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpDelete("deletePrescription/{id}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> DeletePrescription(int id)
     {
         if (!await PrescriptionExists(id))
@@ -1030,6 +1052,7 @@ public class PatientsController : BaseApiController
     }
 
     [HttpDelete("deleteSurvey/{id}")]
+    [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> DeleteSurvey(int id)
     {
         if (!await SurveyExists(id))

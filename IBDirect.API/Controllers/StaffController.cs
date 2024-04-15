@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IBDirect.API.Controllers;
 
-[Authorize]
+[Authorize(Roles = "2,3,4,5")]
 public class StaffController : BaseApiController
 {
     private readonly DataContext _context;
