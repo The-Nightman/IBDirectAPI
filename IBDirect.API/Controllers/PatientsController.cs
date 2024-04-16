@@ -17,7 +17,7 @@ public class PatientsController : BaseApiController
         _context = context;
     }
 
-    [HttpPost("{id}/addAppointment")]
+    [HttpPost("{id}/add-appointment")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> AddAppointment(
         int id,
@@ -72,7 +72,7 @@ public class PatientsController : BaseApiController
         return Ok(appointment.Id);
     }
 
-    [HttpPost("{id}/addPrescription")]
+    [HttpPost("{id}/add-prescription")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> AddPrescription(
         int id,
@@ -130,7 +130,7 @@ public class PatientsController : BaseApiController
         return Ok(prescription.Id);
     }
 
-    [HttpPost("{id}/addSurvey")]
+    [HttpPost("{id}/add-survey")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> AddSurvey(int id, CreateRescheduleSurveyDto surveyDto)
     {
@@ -200,7 +200,7 @@ public class PatientsController : BaseApiController
         return Ok(patient);
     }
 
-    [HttpGet("findPatient/{searchName}")]
+    [HttpGet("find-patient/{searchName}")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetPatientsByName(
         string searchName
@@ -369,7 +369,7 @@ public class PatientsController : BaseApiController
         return Ok(patientDetails);
     }
 
-    [HttpGet("{id}/myDetailsBrief")]
+    [HttpGet("{id}/my-details-brief")]
     [Authorize(Roles = "1")]
     public async Task<ActionResult<PatientMyDetailsBriefDto>> GetMyDetailsBrief(int id)
     {
@@ -397,7 +397,7 @@ public class PatientsController : BaseApiController
         return Ok(patientDetails);
     }
 
-    [HttpGet("{id}/myUpcoming")]
+    [HttpGet("{id}/my-upcoming")]
     [Authorize(Roles = "1")]
     public async Task<ActionResult<PatientUpcomingDto>> GetMyUpcoming(int id)
     {
@@ -468,7 +468,7 @@ public class PatientsController : BaseApiController
         return Ok(patientUpcoming);
     }
 
-    [HttpGet("{id}/myDetails")]
+    [HttpGet("{id}/my-details")]
     [Authorize(Roles = "1")]
     public async Task<ActionResult<PatientMyDetailsDto>> GetMyDetails(int id)
     {
@@ -542,7 +542,7 @@ public class PatientsController : BaseApiController
         return Ok(patientDetails);
     }
 
-    [HttpGet("{id}/myAppointments")]
+    [HttpGet("{id}/my-appointments")]
     [Authorize(Roles = "1")]
     public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetMyAppointments(int id)
     {
@@ -579,7 +579,7 @@ public class PatientsController : BaseApiController
         return Ok(appoinments);
     }
 
-    [HttpGet("{id}/myPrescriptions")]
+    [HttpGet("{id}/my-prescriptions")]
     [Authorize(Roles = "1")]
     public async Task<ActionResult<IEnumerable<PrescriptionDto>>> GetMyPrescriptions(int id)
     {
@@ -625,7 +625,7 @@ public class PatientsController : BaseApiController
         return Ok(prescriptions);
     }
 
-    [HttpGet("{id}/mySurveys")]
+    [HttpGet("{id}/my-surveys")]
     [Authorize(Roles = "1")]
     public async Task<ActionResult<IEnumerable<SurveyDto>>> GetMySurveys(int id)
     {
@@ -670,7 +670,7 @@ public class PatientsController : BaseApiController
         return Ok(surveys);
     }
 
-    [HttpPut("updateAppointment/{id}")]
+    [HttpPut("update-appointment/{id}")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> UpdateAppointment(
         int id,
@@ -717,7 +717,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPut("updatePrescription/{id}")]
+    [HttpPut("update-prescription/{id}")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> UpdatePrescription(
         int id,
@@ -766,7 +766,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPut("updateSurvey/{id}")]
+    [HttpPut("update-survey/{id}")]
     [Authorize(Roles = "1")]
     public async Task<ActionResult> UpdateSurvey(int id, SurveyDto surveyDto)
     {
@@ -822,7 +822,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPatch("{id}/updateNotes")]
+    [HttpPatch("{id}/update-notes")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> UpdatePatientNotes(
         int id,
@@ -872,7 +872,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPatch("cancelPrescription/{id}")]
+    [HttpPatch("cancel-prescription/{id}")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> CancelPrescription(int id)
     {
@@ -912,7 +912,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPatch("rescheduleSurvey/{id}")]
+    [HttpPatch("reschedule-survey/{id}")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> RescheduleSurvey(int id, CreateRescheduleSurveyDto surveyDto)
     {
@@ -952,7 +952,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpPatch("{id}/updateDetails")]
+    [HttpPatch("{id}/update-details")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> UpdatePatientDetails(
         int id,
@@ -1017,7 +1017,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpDelete("deleteAppointment/{id}")]
+    [HttpDelete("delete-appointment/{id}")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> DeleteAppointment(int id)
     {
@@ -1034,7 +1034,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpDelete("deletePrescription/{id}")]
+    [HttpDelete("delete-prescription/{id}")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> DeletePrescription(int id)
     {
@@ -1051,7 +1051,7 @@ public class PatientsController : BaseApiController
         return NoContent();
     }
 
-    [HttpDelete("deleteSurvey/{id}")]
+    [HttpDelete("delete-survey/{id}")]
     [Authorize(Roles = "2,3,4,5")]
     public async Task<ActionResult> DeleteSurvey(int id)
     {

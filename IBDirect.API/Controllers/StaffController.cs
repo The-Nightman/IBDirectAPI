@@ -41,7 +41,7 @@ public class StaffController : BaseApiController
         return Ok(staff);
     }
 
-    [HttpGet("mypatients/{staffRole}/{staffId}")]
+    [HttpGet("my-patients/{staffRole}/{staffId}")]
     public async Task<ActionResult<IEnumerable<PatientDetailsBriefDto>>> GetStaffPatients(
         int staffRole,
         int staffId
@@ -106,7 +106,7 @@ public class StaffController : BaseApiController
         return Ok(staffDetails);
     }
 
-    [HttpGet("{id}/myAppointments")]
+    [HttpGet("{id}/my-appointments")]
     public async Task<ActionResult<IEnumerable<StaffAppointmentDto>>> GetMyAppointments(int id)
     {
         if (!await StaffMemberExists(id))
@@ -144,7 +144,7 @@ public class StaffController : BaseApiController
         return Ok(appointments);
     }
 
-    [HttpGet("{id}/myDashboardHub")]
+    [HttpGet("{id}/my-dashboard-hub")]
     public async Task<ActionResult<StaffDashboardHubDto>> GetMyDashboardHub(int id)
     {
         if (!await StaffMemberExists(id))
@@ -184,7 +184,7 @@ public class StaffController : BaseApiController
         return Ok(dashboardHub);
     }
 
-    [HttpGet("{id}/myColleagues")]
+    [HttpGet("{id}/my-colleagues")]
     public async Task<ActionResult<IEnumerable<StaffDetailsDto>>> GetMyColleagues(int id)
     {
         if (!await StaffMemberExists(id))
@@ -218,7 +218,7 @@ public class StaffController : BaseApiController
         return Ok(colleagues);
     }
 
-    [HttpGet("findStaff/{searchName}")]
+    [HttpGet("find-staff/{searchName}")]
     public async Task<ActionResult<IEnumerable<StaffDetailsDto>>> GetStaffByName(string searchName)
     {
         var staffMembers = await _context.StaffDetails
