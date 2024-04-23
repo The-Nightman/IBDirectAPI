@@ -19,7 +19,7 @@ public class Seed
 
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        var users = JsonSerializer.Deserialize<List<SeedDataDto>>(usersData);
+        var users = JsonSerializer.Deserialize<List<SeedDataDto>>(usersData, options);
 
         foreach (var user in users)
         {
