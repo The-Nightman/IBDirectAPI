@@ -18,44 +18,388 @@
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
       "Appointments": [
         {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
+          "StaffId": 62,
+          "dateTime": "2024-03-22T16:40:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2023-12-15T16:15:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary, out of schedule due to holidays"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2023-10-06T16:30:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2023-07-14T16:30:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 51,
+          "dateTime": "2023-06-14T13:25:00Z",
+          "location": "Telephone",
+          "appType": "Follow up consultation",
+          "Notes": "1 year follow up, treatment seems to be maintaining remission of symptoms"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2023-04-21T16:40:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2023-01-27T16:35:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-12-14T13:50:00Z",
+          "location": "Telephone",
+          "appType": "Follow up consultation",
+          "Notes": "Follow up consultation, current treatment working well recommend continuing"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-11-07T14:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "PIU",
+          "Notes": "PIU for biologics dose"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-11-04T16:20:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-10-24T13:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "PIU",
+          "Notes": "PIU for biologics dose"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-10-21T16:40:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-10-10T13:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "PIU",
+          "Notes": "PIU for biologics dose"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-10-07T16:15:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-09-26T13:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "PIU",
+          "Notes": "PIU for biologics dose"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-09-23T16:30:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-09-23T16:30:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 51,
+          "dateTime": "2022-09-21T13:13:00Z",
+          "location": "Telephone",
+          "appType": "Treatment Follow up",
+          "Notes": "Follow up with patient to discuss treatment and disease control"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-09-12T13:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "PIU",
+          "Notes": "PIU for biologics dose"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-09-09T16:35:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-08-29T13:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "PIU",
+          "Notes": "PIU for biologics dose"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-08-26T14:35:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Bloodtest",
+          "Notes": "Blood test requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-08-23T16:39:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Blood test",
+          "Notes": "Phlebotomy investigation after symptoms of iron deficiency, consultation with gastroenterology at Leeds General Infirmary needed before prescription of oral iron medications due to IBD"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-08-15T13:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "PIU",
+          "Notes": "PIU for biologics dose"
+        },
+        {
+          "StaffId": 62,
+          "dateTime": "2022-08-12T16:20:00Z",
+          "location": "Kirkstall Medical Centre",
+          "appType": "Bloodtest",
+          "Notes": "Bloodtest requested by gastroenterology at Leeds General Infirmary"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-08-01T13:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "PIU",
+          "Notes": "PIU for biologics dose"
+        },
+        {
+          "StaffId": 54,
+          "dateTime": "2022-07-25T12:00:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "Treatment Follow up",
+          "Notes": "Treatment Follow up discussing bioligics treatment.\nPrednisilone has controlled symptoms well, no issues tapering off.\nPrescription for loading dose of adalimumab next week with PIU nurses"
+        },
+        {
+          "StaffId": 51,
+          "dateTime": "2022-06-20T11:30:00Z",
+          "location": "Leeds General Infirmary",
+          "appType": "Diagnosis Follow up",
+          "Notes": "Follow up with patient after diagnosis tests to discuss treatment and next steps"
         }
       ],
       "Prescriptions": [
         {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
+          "scriptName": "Adalimumab 6x injectors",
+          "scriptStartDate": "2022-11-07",
+          "scriptDose": "40mg",
+          "scriptInterval": "One injector every 2 weeks",
+          "Notes": "Home care self administration prescription, 6 injectors to be delivered every 12 weeks.\nblood tests to be done every 12 weeks.",
+          "scriptRepeat": true,
+          "prescribingStaffId": 54,
+          "cancelled": false
+        },
+        {
+          "scriptName": "Adalimumab",
+          "scriptStartDate": "2022-09-12",
+          "scriptDose": "40mg / 1x injector",
+          "scriptInterval": "Once every 2 weeks",
+          "Notes": "12/09/2022 - biologics maintenance dose, blood test request before next dose\n04/11/2022 - transition to home care after next dose this following monday",
+          "scriptRepeat": true,
+          "prescribingStaffId": 54,
+          "cancelled": true
+        },
+        {
+          "scriptName": "Ferric Maltol 56 capsules",
+          "scriptStartDate": "2022-08-31",
+          "scriptDose": "30mg",
+          "scriptInterval": "Twice Daily",
+          "Notes": "Ferric maltol capsules to raise ferritin after investigation by GP revealing ferritin levels at below bottom of normal range",
+          "scriptRepeat": false,
+          "prescribingStaffId": 51,
+          "cancelled": false
+        },
+        {
+          "scriptName": "Adalimumab 2x injectors",
+          "scriptStartDate": "2022-08-29",
+          "scriptDose": "80mg / 2x 40mg injectors",
+          "scriptInterval": "Once",
+          "Notes": "Final loading dose before moving onto maintenance dose, blood test requested for first available day before next dose",
+          "scriptRepeat": false,
+          "prescribingStaffId": 54,
+          "cancelled": false
+        },
+        {
+          "scriptName": "Adalimumab 3x injectors",
+          "scriptStartDate": "2022-08-15",
+          "scriptDose": "120mg / 3x 40mg injectors",
+          "scriptInterval": "Once",
+          "Notes": "Follow up loading dose, blood test requested before next dose on the first available day",
+          "scriptRepeat": false,
+          "prescribingStaffId": 54,
+          "cancelled": false
+        },
+        {
+          "scriptName": "Adalimumab 4x injectors",
+          "scriptStartDate": "2022-08-01",
+          "scriptDose": "160mg / 4x 40mg injectors",
+          "scriptInterval": "Once",
+          "Notes": "Adalimumab biologics loading dose of 160mg. prescriptions to taper down by 40mg every 2 weeks until at maintenance dose of 40mg. Blood test requested before next dose on the first available day ",
+          "scriptRepeat": false,
+          "prescribingStaffId": 54,
+          "cancelled": false
+        },
+        {
+          "scriptName": "Prednisolone",
+          "scriptStartDate": "2022-06-20",
+          "scriptDose": "40mg (reduce by 5mg/1 tablet every 7 days)",
+          "scriptInterval": "Once Daily",
+          "Notes": "Corticosteroid prescribed to control IBD symptoms before moving to biologics treatment post-diagnosis",
+          "scriptRepeat": false,
+          "prescribingStaffId": 51,
+          "cancelled": false
         }
       ],
       "Surveys": [
         {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
+          "date": "2024-03-20",
+          "q1": 0,
+          "q2": 0,
+          "q3": 2,
+          "q4": 2,
+          "q4a": false,
+          "q5": 1,
+          "q6": 2,
+          "q7": 2,
+          "q8": 2,
+          "q9": 2,
+          "q10": 2,
+          "q11": 2,
+          "q12": 10,
+          "contScore": 16,
+          "q13": 0,
+          "completed": true
+        },
+        {
+          "date": "2023-09-19",
+          "q1": 0,
+          "q2": 0,
+          "q3": 2,
+          "q4": 2,
+          "q4a": false,
+          "q5": 2,
+          "q6": 2,
+          "q7": 2,
+          "q8": 2,
+          "q9": 2,
+          "q10": 1,
+          "q11": 2,
+          "q12": 10,
+          "contScore": 15,
+          "q13": 0,
+          "completed": true
+        },
+        {
+          "date": "2023-03-20",
+          "q1": 0,
+          "q2": 1,
+          "q3": 2,
+          "q4": 2,
+          "q4a": false,
+          "q5": 1,
+          "q6": 2,
+          "q7": 2,
+          "q8": 2,
+          "q9": 1,
+          "q10": 2,
+          "q11": 2,
+          "q12": 9,
+          "contScore": 15,
+          "q13": 0,
+          "completed": true
+        },
+        {
+          "date": "2022-09-14",
+          "q1": 0,
+          "q2": 1,
+          "q3": 2,
+          "q4": 2,
+          "q4a": false,
+          "q5": 1,
+          "q6": 2,
+          "q7": 2,
+          "q8": 2,
+          "q9": 2,
+          "q10": 2,
+          "q11": 2,
+          "q12": 9,
+          "contScore": 16,
+          "q13": 0,
+          "completed": true
+        },
+        {
+          "date": "2022-07-21",
+          "q1": 0,
+          "q2": 0,
+          "q3": 2,
+          "q4": 2,
+          "q4a": false,
+          "q5": 2,
+          "q6": 2,
+          "q7": 2,
+          "q8": 2,
+          "q9": 1,
+          "q10": 1,
+          "q11": 2,
+          "q12": 10,
+          "contScore": 14,
+          "q13": 0,
+          "completed": true
+        },
+        {
+          "date": "2022-06-22",
+          "q1": 2,
+          "q2": 3,
+          "q3": 0,
+          "q4": 0,
+          "q4a": true,
+          "q5": 1,
+          "q6": 0,
+          "q7": 0,
+          "q8": 0,
+          "q9": 0,
+          "q10": 1,
+          "q11": 0,
+          "q12": 0,
+          "contScore": 1,
+          "q13": 0,
+          "completed": true
         }
       ]
     }
@@ -77,48 +421,9 @@
       "GenpractId": 60,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -138,48 +443,9 @@
       "GenpractId": 62,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -199,48 +465,9 @@
       "GenpractId": 62,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -260,48 +487,9 @@
       "GenpractId": 60,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -321,48 +509,9 @@
       "GenpractId": 62,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -382,48 +531,9 @@
       "GenpractId": 60,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -443,48 +553,9 @@
       "GenpractId": 60,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -504,48 +575,9 @@
       "GenpractId": 60,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -565,48 +597,9 @@
       "GenpractId": 61,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -626,48 +619,9 @@
       "GenpractId": 61,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -687,48 +641,9 @@
       "GenpractId": 60,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -748,48 +663,9 @@
       "GenpractId": 62,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -809,48 +685,9 @@
       "GenpractId": 60,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
@@ -870,48 +707,9 @@
       "GenpractId": 62,
       "Hospital": "Leeds General Infirmary",
       "Notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia sapien in nibh tempor consectetur. Sed venenatis, enim ac dignissim pharetra, neque dolor malesuada nulla, vel sagittis ligula purus vel eros. Sed at odio posuere, porta libero non, tincidunt purus.",
-      "Appointments": [
-        {
-          "DateTime": "2024-04-17T23:13:14.924Z",
-          "Location": "Royal Hospital",
-          "AppType": "type",
-          "StaffId": 2,
-          "Notes": "This is a note"
-        }
-      ],
-      "Prescriptions": [
-        {
-          "ScriptName": "drug",
-          "ScriptStartDate": "2024-01-30",
-          "ScriptDose": "dose",
-          "ScriptInterval": "interval",
-          "Notes": "This is a note",
-          "PrescribingStaffId": 2,
-          "ScriptRepeat": true,
-          "Cancelled": false
-        }
-      ],
-      "Surveys": [
-        {
-          "Q1": 1,
-          "Q2": 1,
-          "Q3": 1,
-          "Q4": 1,
-          "Q4a": false,
-          "Q5": 1,
-          "Q6": 1,
-          "Q7": 1,
-          "Q8": 1,
-          "Q9": 1,
-          "Q10": 1,
-          "Q11": 1,
-          "Q12": 1,
-          "ContScore": 16,
-          "Q13": 1,
-          "Completed": true,
-          "Date": "2024-01-30"
-        }
-      ]
+      "Appointments": [],
+      "Prescriptions": [],
+      "Surveys": []
     }
   },
   {
