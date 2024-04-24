@@ -15,6 +15,7 @@ public class DataContext : DbContext
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
     public DbSet<StaffDetails> StaffDetails { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
