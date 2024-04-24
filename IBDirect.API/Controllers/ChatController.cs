@@ -21,14 +21,7 @@ public class ChatController : BaseApiController
     [HttpPost("create-message")]
     public async Task<ActionResult<MessageDto>> CreateMessage(MessageDto createMessageDto)
     {
-        if (!await _context.Users.AnyAsync(u => u.Id == createMessageDto.SenderId))
-        {
-            return BadRequest("Sender does not exist");
-        }
-        else if (!await _context.Users.AnyAsync(u => u.Id == createMessageDto.RecipientId))
-        {
-            return BadRequest("Recipient does not exist");
-        }
+        await UsersExist(createMessageDto.SenderId, createMessageDto.RecipientId);
 
         var message = new Message
         {
@@ -47,5 +40,50 @@ public class ChatController : BaseApiController
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpGet("user-thread/{currentId}/{recipientId}")]
+    public async Task<ActionResult<IEnumerable<Message>>> GetUserThread(
+        int currentId,
+        int recipientId
+    )
+    {
+        await UsersExist(currentId, recipientId);
+
+        var messages = await _context.Messages
+            .Where(
+                m =>
+                    (m.SenderId == currentId && m.RecipientId == recipientId)
+                    || (m.SenderId == recipientId && m.RecipientId == currentId)
+            )
+            .OrderBy(m => m.DateSent)
+            .ToListAsync();
+
+        var unreadMessages = messages.Where(m => m.RecipientId == currentId && !m.Read).ToList();
+
+        if (unreadMessages.Any())
+        {
+            foreach (var message in unreadMessages)
+            {
+                message.Read = true;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        return Ok(messages);
+    }
+
+    private async Task<BadRequestObjectResult> UsersExist(int senderId, int recipientId)
+    {
+        if (!await _context.Users.AnyAsync(u => u.Id == senderId))
+        {
+            return BadRequest("Sender does not exist");
+        }
+        else if (!await _context.Users.AnyAsync(u => u.Id == recipientId))
+        {
+            return BadRequest("Recipient does not exist");
+        }
+        return null;
     }
 }
