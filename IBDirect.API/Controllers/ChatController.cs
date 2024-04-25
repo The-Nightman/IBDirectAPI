@@ -42,6 +42,60 @@ public class ChatController : BaseApiController
         return NoContent();
     }
 
+    [HttpGet("user-inbox/{currentId}")]
+    public async Task<ActionResult<IEnumerable<UserInboxDto>>> GetUserInbox(int currentId)
+    {
+        if (!await _context.Users.AnyAsync(u => u.Id == currentId))
+        {
+            return BadRequest("User does not exist");
+        }
+
+        var unreadChats = await _context.Messages
+            .Where(m => m.RecipientId == currentId && !m.Read)
+            .GroupBy(m => m.SenderId)
+            .Select(
+                g =>
+                    new UserUnreadChatsDto
+                    {
+                        Content = g.First().Content,
+                        MostRecent = g.Max(m => m.DateSent),
+                        SenderId = g.Key,
+                        SenderName = g.First().SenderName,
+                        SenderRole = g.First().SenderRole,
+                        UnreadMessages = g.Count()
+                    }
+            )
+            .OrderByDescending(m => m.MostRecent)
+            .ToListAsync();
+
+        var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
+
+        var recentChats = await _context.Messages
+            .Where(m => m.RecipientId == currentId && m.Read && m.DateSent >= oneWeekAgo)
+            .GroupBy(m => m.SenderId)
+            .Select(
+                g =>
+                    new UserRecentChatsDto
+                    {
+                        Content = g.First().Content,
+                        MostRecent = g.Max(m => m.DateSent),
+                        SenderId = g.Key,
+                        SenderName = g.First().SenderName,
+                        SenderRole = g.First().SenderRole
+                    }
+            )
+            .OrderByDescending(m => m.MostRecent)
+            .ToListAsync();
+
+        var inbox = new UserInboxDto 
+        {
+            UnreadChats = unreadChats,
+            RecentChats = recentChats
+        };
+
+        return Ok(inbox);
+    }
+
     [HttpGet("user-thread/{currentId}/{recipientId}")]
     public async Task<ActionResult<IEnumerable<Message>>> GetUserThread(
         int currentId,
