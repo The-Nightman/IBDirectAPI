@@ -1,5 +1,6 @@
 using IBDirect.API.Data;
 using IBDirect.API.Extensions;
+using IBDirect.API.SignalR;
 using IBDirect.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
+builder.Services.AddSignalR();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -34,6 +36,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("/hubs/presence");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
