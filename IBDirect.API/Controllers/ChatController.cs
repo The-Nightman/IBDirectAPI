@@ -39,7 +39,7 @@ public class ChatController : BaseApiController
         _context.Messages.Add(message);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok(message);
     }
 
     [HttpGet("user-inbox/{currentId}")]
@@ -70,9 +70,16 @@ public class ChatController : BaseApiController
 
         var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
 
+        var unreadChatSenderIds = unreadChats.Select(u => u.SenderId).ToList();
+
         var recentChats = await _context.Messages
-            .Where(m => m.RecipientId == currentId && m.Read && m.DateSent >= oneWeekAgo)
-            .GroupBy(m => m.SenderId)
+            .Where(
+                m =>
+                    (m.RecipientId == currentId || m.SenderId == currentId)
+                    && m.DateSent >= oneWeekAgo
+                    && !unreadChatSenderIds.Contains(m.SenderId == currentId ? m.RecipientId : m.SenderId)
+            )
+            .GroupBy(m => m.SenderId == currentId ? m.RecipientId : m.SenderId)
             .Select(
                 g =>
                     new UserRecentChatsDto
@@ -80,15 +87,21 @@ public class ChatController : BaseApiController
                         Content = g.First().Content,
                         MostRecent = g.Max(m => m.DateSent),
                         SenderId = g.Key,
-                        SenderName = g.First().SenderName,
-                        SenderRole = g.First().SenderRole
+                        SenderName =
+                            g.First().SenderId == currentId
+                                ? g.First().RecipientName
+                                : g.First().SenderName,
+                        SenderRole =
+                            g.First().SenderId == currentId
+                                ? g.First().RecipientRole
+                                : g.First().SenderRole
                     }
             )
             .OrderByDescending(m => m.MostRecent)
             .ToListAsync();
 
-        var inbox = new UserInboxDto 
-        {
+        var inbox = new UserInboxDto
+        { 
             UnreadChats = unreadChats,
             RecentChats = recentChats
         };
