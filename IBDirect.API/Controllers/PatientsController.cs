@@ -388,6 +388,7 @@ public class PatientsController : BaseApiController
             where p.PatientId == id
             select new PatientMyDetailsBriefDto
             {
+                Id = p.PatientId,
                 Name = p.Name,
                 Diagnosis = p.Diagnosis,
                 Hospital = p.Hospital,
