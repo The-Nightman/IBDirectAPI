@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
@@ -8,12 +9,18 @@ namespace IBDirect.API.SignalR
     {
         public override async Task OnConnectedAsync()
         {
-            await Clients.Others.SendAsync("UserIsOnline", Context.User.Identity.Name);
+            await Clients.All.SendAsync(
+                "UserIsOnline",
+                Context.User.Claims.LastOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+            );
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.Others.SendAsync("UserIsOffline", Context.User.Identity.Name);
+            await Clients.All.SendAsync(
+                "UserIsOffline",
+                Context.User.Claims.LastOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+            );
 
             await base.OnDisconnectedAsync(exception);
         }
