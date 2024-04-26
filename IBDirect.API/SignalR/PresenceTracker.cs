@@ -5,35 +5,35 @@ namespace IBDirect.API.SignalR
         private static readonly Dictionary<string, List<string>> OnlineUsers =
             new Dictionary<string, List<string>>();
 
-        public Task UserConnected(string username, string connectionId)
+        public Task UserConnected(string userId, string connectionId)
         {
             lock (OnlineUsers)
             {
-                if (OnlineUsers.ContainsKey(username))
+                if (OnlineUsers.ContainsKey(userId))
                 {
-                    OnlineUsers[username].Add(connectionId);
+                    OnlineUsers[userId].Add(connectionId);
                 }
                 else
                 {
-                    OnlineUsers.Add(username, new List<string> { connectionId });
+                    OnlineUsers.Add(userId, new List<string> { connectionId });
                 }
             }
 
             return Task.CompletedTask;
         }
 
-        public Task UserDisconnected(string username, string connectionId)
+        public Task UserDisconnected(string userId, string connectionId)
         {
             lock (OnlineUsers)
             {
-                if (!OnlineUsers.ContainsKey(username))
+                if (!OnlineUsers.ContainsKey(userId))
                     return Task.CompletedTask;
 
-                OnlineUsers[username].Remove(connectionId);
+                OnlineUsers[userId].Remove(connectionId);
 
-                if (OnlineUsers[username].Count == 0)
+                if (OnlineUsers[userId].Count == 0)
                 {
-                    OnlineUsers.Remove(username);
+                    OnlineUsers.Remove(userId);
                 }
             }
 
