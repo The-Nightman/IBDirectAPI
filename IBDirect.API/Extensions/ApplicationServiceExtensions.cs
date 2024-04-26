@@ -14,6 +14,7 @@ public static class ApplicationServiceExtensions
         });
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddSignalR();
 
         return services;
     }
