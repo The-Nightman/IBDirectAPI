@@ -1,6 +1,7 @@
 using IBDirect.API.Data;
 using IBDirect.API.Interfaces;
 using IBDirect.API.Services;
+using IBDirect.API.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace IBDirect.API.Extensions;
@@ -15,6 +16,7 @@ public static class ApplicationServiceExtensions
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
         services.AddSignalR();
+        services.AddSingleton<PresenceTracker>();
 
         return services;
     }
