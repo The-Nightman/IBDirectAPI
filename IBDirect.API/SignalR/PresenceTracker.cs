@@ -40,12 +40,12 @@ namespace IBDirect.API.SignalR
             return Task.CompletedTask;
         }
 
-        public Task<string[]> GetOnlineUsers()
+        public Task<int[]> GetOnlineUsers()
         {
-            string[] onlineUsers;
+            int[] onlineUsers;
             lock (OnlineUsers)
             {
-                onlineUsers = OnlineUsers.OrderBy(k => k.Key).Select(k => k.Key).ToArray();
+                onlineUsers = OnlineUsers.OrderBy(k => k.Key).Select(k => int.Parse(k.Key)).ToArray();
             }
 
             return Task.FromResult(onlineUsers);
