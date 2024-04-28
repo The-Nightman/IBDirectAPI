@@ -15,6 +15,7 @@ public static class ApplicationServiceExtensions
         });
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddSignalR();
         services.AddSingleton<PresenceTracker>();
 
