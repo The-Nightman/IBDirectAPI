@@ -101,8 +101,8 @@ namespace IBDirect.API.SignalR
                 var connections = await PresenceTracker.GetConnectionsForUser(message.RecipientId.ToString());
                 if (connections != null)
                 {
-                    var inbox = await _messageRepository.GetUserInbox(createMessageDto.RecipientId);
-                    await _presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived", inbox);
+                    var unreads = await _messageRepository.GetUnreadMessages(message.RecipientId);
+                    await _presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived", unreads);
                 }
             }
 
