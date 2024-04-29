@@ -14,11 +14,17 @@ namespace IBDirect.API.SignalR
     {
         private readonly IMessageRepository _messageRepository;
         private readonly DataContext _context;
+        private readonly IHubContext<PresenceHub> _presenceHub;
 
-        public MessageHub(IMessageRepository messageRepository, DataContext context)
+        public MessageHub(
+            IMessageRepository messageRepository,
+            DataContext context,
+            IHubContext<PresenceHub> presenceHub
+        )
         {
             _messageRepository = messageRepository;
             _context = context;
+            _presenceHub = presenceHub;
         }
 
         public override async Task OnConnectedAsync()
@@ -31,6 +37,7 @@ namespace IBDirect.API.SignalR
             );
 
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            await AddToGroup(groupName);
 
             var messages = await _messageRepository.GetMessageThread(
                 int.Parse(
@@ -44,9 +51,10 @@ namespace IBDirect.API.SignalR
             await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
-            return base.OnDisconnectedAsync(exception);
+            await RemoveFromGroup();
+            await base.OnDisconnectedAsync(exception);
         }
 
         public async Task SendMessage(MessageDto createMessageDto)
@@ -77,20 +85,60 @@ namespace IBDirect.API.SignalR
                 Read = false
             };
 
-            _context.Messages.Add(message);
-            await _context.SaveChangesAsync();
-
             var groupName = GetGroupName(
                 Context.User.Claims.LastOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value,
                 createMessageDto.RecipientId.ToString()
             );
-            await Clients.Group(groupName).SendAsync("NewMessage", message);
+
+            var group = await _messageRepository.GetMessageGroup(groupName);
+
+            if (group.Connections.Any(c => c.UserId == message.RecipientId))
+            {
+                message.Read = true;
+            }
+
+            _context.Messages.Add(message);
+
+            if (await _messageRepository.SaveAllAsync())
+            {
+                await Clients.Group(groupName).SendAsync("NewMessage", message);
+            }
         }
 
         public string GetGroupName(string caller, string other)
         {
             var stringCompare = string.CompareOrdinal(caller, other) < 0;
             return stringCompare ? $"{caller}-{other}" : $"{other}-{caller}";
+        }
+
+        public async Task<bool> AddToGroup(string groupName)
+        {
+            var group = await _messageRepository.GetMessageGroup(groupName);
+            var connection = new Connection(
+                Context.ConnectionId,
+                int.Parse(
+                    Context.User.Claims
+                        .LastOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
+                        ?.Value
+                )
+            );
+
+            if (group == null)
+            {
+                group = new Group(groupName);
+                _messageRepository.AddGroup(group);
+            }
+
+            group.Connections.Add(connection);
+
+            return await _messageRepository.SaveAllAsync();
+        }
+
+        public async Task RemoveFromGroup()
+        {
+            var connection = await _messageRepository.GetConnection(Context.ConnectionId);
+            _messageRepository.RemoveConnection(connection);
+            await _messageRepository.SaveAllAsync();
         }
     }
 }
