@@ -50,5 +50,16 @@ namespace IBDirect.API.SignalR
 
             return Task.FromResult(onlineUsers);
         }
+
+        public static Task<string[]> GetConnectionsForUser(string userId)
+        {
+            string[] connections;
+            lock (OnlineUsers)
+            {
+                connections = OnlineUsers.GetValueOrDefault(userId).ToArray();
+            }
+
+            return Task.FromResult(connections);
+        }
     }
 }

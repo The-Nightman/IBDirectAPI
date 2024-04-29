@@ -94,6 +94,29 @@ namespace IBDirect.API.Data
             return inbox;
         }
 
+        public async Task<IEnumerable<UserUnreadChatsDto>> GetUnreadMessages(int currentId)
+        {
+            var unreadChats = await _context.Messages
+                .Where(m => m.RecipientId == currentId && !m.Read)
+                .GroupBy(m => m.SenderId)
+                .Select(
+                    g =>
+                        new UserUnreadChatsDto
+                        {
+                            Content = g.First().Content,
+                            MostRecent = g.Max(m => m.DateSent),
+                            SenderId = g.Key,
+                            SenderName = g.First().SenderName,
+                            SenderRole = g.First().SenderRole,
+                            UnreadMessages = g.Count()
+                        }
+                )
+                .OrderByDescending(m => m.MostRecent)
+                .ToListAsync();
+
+            return unreadChats;
+        }
+
         public async Task<IEnumerable<Message>> GetMessageThread(int currentId, int recipientId)
         {
             var messages = await _context.Messages
