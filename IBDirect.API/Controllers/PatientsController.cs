@@ -388,6 +388,7 @@ public class PatientsController : BaseApiController
             where p.PatientId == id
             select new PatientMyDetailsBriefDto
             {
+                Id = p.PatientId,
                 Name = p.Name,
                 Diagnosis = p.Diagnosis,
                 Hospital = p.Hospital,
@@ -668,6 +669,70 @@ public class PatientsController : BaseApiController
             .ToListAsync();
 
         return Ok(surveys);
+    }
+
+    [HttpGet("{id}/my-staff")]
+    [Authorize(Roles = "1")]
+    public async Task<ActionResult<PatientMyStaffDto>> GetMyStaff(int id)
+    {
+        if (!await PatientExists(id))
+        {
+            return NotFound("Patient not found");
+        }
+
+        if (!await PatientDetailsExists(id))
+        {
+            return NotFound("Patient details not found, please contact your administrator");
+        }
+
+        var myStaff = await (
+            from p in _context.PatientDetails
+            join c in _context.StaffDetails on p.ConsultantId equals c.StaffId
+            join n in _context.StaffDetails on p.NurseId equals n.StaffId
+            from s in _context.StaffDetails.Where(s => p.StomaNurseId == s.StaffId).DefaultIfEmpty()
+            join g in _context.StaffDetails on p.GenpractId equals g.StaffId
+            where p.PatientId == id
+            select new PatientMyStaffDto
+            {
+                Consultant = new StaffDetailsDto
+                {
+                    StaffId = c.StaffId,
+                    Name = c.Name,
+                    Role = c.Role,
+                    Speciality = c.Speciality,
+                    Practice = c.Practice
+                },
+                Nurse = new StaffDetailsDto
+                {
+                    StaffId = n.StaffId,
+                    Name = n.Name,
+                    Role = n.Role,
+                    Speciality = n.Speciality,
+                    Practice = n.Practice
+                },
+                StomaNurse =
+                    s != null
+                        ? new StaffDetailsDto
+                        {
+                            StaffId = s.StaffId,
+                            Name = s.Name,
+                            Role = s.Role,
+                            Speciality = s.Speciality,
+                            Practice = s.Practice
+                        }
+                        : null,
+                Genpract = new StaffDetailsDto
+                {
+                    StaffId = g.StaffId,
+                    Name = g.Name,
+                    Role = g.Role,
+                    Speciality = g.Speciality,
+                    Practice = g.Practice
+                }
+            }
+        ).FirstOrDefaultAsync();
+
+        return Ok(myStaff);
     }
 
     [HttpPut("update-appointment/{id}")]

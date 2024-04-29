@@ -3,6 +3,7 @@ using System;
 using IBDirect.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IBDirect.API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240424153637_AddMessageEntity")]
+    partial class AddMessageEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,34 +56,6 @@ namespace IBDirect.API.Data.Migrations
                     b.HasIndex("PatientDetailsId");
 
                     b.ToTable("AppointmentData");
-                });
-
-            modelBuilder.Entity("IBDirect.API.Entities.Connection", b =>
-                {
-                    b.Property<string>("ConnectionId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GroupName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ConnectionId");
-
-                    b.HasIndex("GroupName");
-
-                    b.ToTable("Connections");
-                });
-
-            modelBuilder.Entity("IBDirect.API.Entities.Group", b =>
-                {
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Name");
-
-                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("IBDirect.API.Entities.Message", b =>
@@ -342,13 +317,6 @@ namespace IBDirect.API.Data.Migrations
                     b.Navigation("PatientDetails");
                 });
 
-            modelBuilder.Entity("IBDirect.API.Entities.Connection", b =>
-                {
-                    b.HasOne("IBDirect.API.Entities.Group", null)
-                        .WithMany("Connections")
-                        .HasForeignKey("GroupName");
-                });
-
             modelBuilder.Entity("IBDirect.API.Entities.Prescription", b =>
                 {
                     b.HasOne("IBDirect.API.Entities.PatientDetails", "PatientDetails")
@@ -369,11 +337,6 @@ namespace IBDirect.API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("PatientDetails");
-                });
-
-            modelBuilder.Entity("IBDirect.API.Entities.Group", b =>
-                {
-                    b.Navigation("Connections");
                 });
 
             modelBuilder.Entity("IBDirect.API.Entities.PatientDetails", b =>
