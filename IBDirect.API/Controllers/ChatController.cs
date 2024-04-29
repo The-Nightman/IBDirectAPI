@@ -19,7 +19,7 @@ public class ChatController : BaseApiController
     }
 
     [HttpPost("create-message")]
-    public async Task<ActionResult<MessageDto>> CreateMessage(MessageDto createMessageDto)
+    public async Task<ActionResult<Message>> CreateMessage(MessageDto createMessageDto)
     {
         await UsersExist(createMessageDto.SenderId, createMessageDto.RecipientId);
 
@@ -43,7 +43,7 @@ public class ChatController : BaseApiController
     }
 
     [HttpGet("user-inbox/{currentId}")]
-    public async Task<ActionResult<IEnumerable<UserInboxDto>>> GetUserInbox(int currentId)
+    public async Task<ActionResult<UserInboxDto>> GetUserInbox(int currentId)
     {
         if (!await _context.Users.AnyAsync(u => u.Id == currentId))
         {
