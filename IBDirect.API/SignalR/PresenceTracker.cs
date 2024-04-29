@@ -56,7 +56,9 @@ namespace IBDirect.API.SignalR
             string[] connections;
             lock (OnlineUsers)
             {
-                connections = OnlineUsers.GetValueOrDefault(userId).ToArray();
+                connections = OnlineUsers.ContainsKey(userId)
+                    ? OnlineUsers[userId].ToArray()
+                    : new string[] { };
             }
 
             return Task.FromResult(connections);
