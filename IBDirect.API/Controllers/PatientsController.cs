@@ -309,6 +309,7 @@ public class PatientsController : BaseApiController
                                 Notes = a.Notes
                             }
                     )
+                    .OrderByDescending(a => a.DateTime)
                     .ToList(),
                 Surveys = p.Surveys
                     .Select(
@@ -335,6 +336,7 @@ public class PatientsController : BaseApiController
                                 Completed = s.Completed
                             }
                     )
+                    .OrderByDescending(s => s.Date)
                     .ToList(),
                 Prescriptions = p.Prescriptions
                     .Join(
@@ -362,6 +364,7 @@ public class PatientsController : BaseApiController
                                 Cancelled = pr.Cancelled,
                             }
                     )
+                    .OrderByDescending(pr => pr.ScriptStartDate)
                     .ToList()
             }
         ).FirstOrDefaultAsync();
@@ -430,6 +433,7 @@ public class PatientsController : BaseApiController
                         Notes = a.Notes
                     }
             )
+            .OrderByDescending(a => a.DateTime)
             .ToListAsync();
 
         var upcomingSurveys = await _context.Surveys
@@ -458,6 +462,7 @@ public class PatientsController : BaseApiController
                         Completed = s.Completed
                     }
             )
+            .OrderByDescending(s => s.Date)
             .ToListAsync();
 
         var patientUpcoming = new PatientUpcomingDto
@@ -575,6 +580,7 @@ public class PatientsController : BaseApiController
                         Notes = a.Notes
                     }
             )
+            .OrderByDescending(a => a.DateTime)
             .ToListAsync();
 
         return Ok(appoinments);
@@ -621,6 +627,7 @@ public class PatientsController : BaseApiController
                         Cancelled = pr.Cancelled,
                     }
             )
+            .OrderByDescending(pr => pr.ScriptStartDate)
             .ToListAsync();
 
         return Ok(prescriptions);
@@ -666,6 +673,7 @@ public class PatientsController : BaseApiController
                         Completed = s.Completed
                     }
             )
+            .OrderByDescending(s => s.Date)
             .ToListAsync();
 
         return Ok(surveys);
