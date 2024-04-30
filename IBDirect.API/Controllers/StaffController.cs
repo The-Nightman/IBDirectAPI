@@ -134,7 +134,9 @@ public class StaffController : BaseApiController
                 AppType = a.AppType,
                 Notes = a.Notes
             }
-        ).ToListAsync();
+        )
+        .OrderByDescending(a => a.DateTime)
+        .ToListAsync();
 
         if (appointments == null)
         {
@@ -178,7 +180,9 @@ public class StaffController : BaseApiController
                     AppType = a.AppType,
                     Notes = a.Notes
                 }
-            ).ToListAsync()
+            )
+            .OrderByDescending(a => a.DateTime)
+            .ToListAsync()
         };
 
         return Ok(dashboardHub);
