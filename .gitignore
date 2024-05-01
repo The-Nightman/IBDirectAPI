@@ -1,5 +1,7 @@
+.mono/
 bin/
 obj/
 appsettings.json
 appsettings.Development.json
 launchSettings.json
+fly.toml
